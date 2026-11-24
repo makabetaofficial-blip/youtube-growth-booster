@@ -1,0 +1,3249 @@
+<!DOCTYPE html>
+<html lang="hi" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Growth Booster — Multi-User Creator SaaS & AI Studio</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js for SaaS Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Google Fonts: Inter & Noto Sans Devanagari -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans Devanagari', 'sans-serif'],
+          },
+          colors: {
+            yt: {
+              red: '#FF0033',
+              darkred: '#CC0029',
+              bg: '#090B10',
+              sidebar: '#0C0F17',
+              card: '#111520',
+              border: '#1E2436',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #090B10;
+      color: #F3F4F6;
+      font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #090B10; }
+    ::-webkit-scrollbar-thumb { background: #262E45; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #FF0033; }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .section-view {
+      display: none;
+      animation: fadeSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .section-view.active {
+      display: block;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .saas-card {
+      background: linear-gradient(155deg, rgba(17, 21, 32, 0.96), rgba(12, 15, 23, 0.98));
+      border: 1px solid rgba(46, 56, 86, 0.65);
+      box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.75);
+    }
+
+    .yt-glow {
+      box-shadow: 0 0 28px rgba(255, 0, 51, 0.32);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-yt-red selection:text-white">
+
+  <!-- Toast Notification Container (No alert() used anywhere) -->
+  <div id="toast-container" class="fixed bottom-20 lg:bottom-6 right-4 sm:right-5 z-50 flex flex-col gap-2.5 max-w-md pointer-events-none"></div>
+
+  <!-- ========================================================= -->
+  <!-- STATE A: UNAUTHENTICATED SAAS WELCOME & LANDING DASHBOARD -->
+  <!-- ========================================================= -->
+  <div id="unauth-welcome-screen" class="min-h-screen flex flex-col justify-between bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-rose-950/25 via-[#090B10] to-[#090B10]">
+    <!-- Top SaaS Navbar -->
+    <header class="w-full border-b border-gray-800/80 bg-[#090B10]/90 backdrop-blur-md sticky top-0 z-30">
+      <div class="max-w-[1600px] mx-auto px-4 sm:px-8 py-4 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-yt-red to-rose-700 flex items-center justify-center shadow-lg yt-glow shrink-0">
+            <i class="fa-brands fa-youtube text-white text-xl"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="font-extrabold text-base sm:text-lg text-white tracking-tight truncate">YouTube Growth Booster</span>
+              <span class="hidden sm:inline-block px-2 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[10px] font-bold uppercase tracking-wider shrink-0">Frontend Local / Demo</span>
+            </div>
+            <p class="text-[11px] text-gray-400 truncate">Multi-User Creator Workspace • Local Storage & Simulated API Mode</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <button type="button" onclick="loginWithSandboxDemo()" class="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs sm:text-sm font-bold shadow-lg transition flex items-center gap-2">
+            <i class="fa-solid fa-rocket"></i>
+            <span>Open Full App (Instant Demo)</span>
+          </button>
+          <button type="button" onclick="openGoogleAuthModal()" class="hidden sm:flex px-4 py-2 rounded-xl bg-yt-red hover:bg-yt-darkred text-white text-xs sm:text-sm font-bold shadow-lg yt-glow transition items-center gap-2">
+            <i class="fa-brands fa-google"></i>
+            <span>Local Account Login (Demo)</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Onboarding Hero & SaaS Architecture Preview -->
+    <main class="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-8 py-8 lg:py-14 flex flex-col justify-center">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <!-- Left Hero Pitch & Primary OAuth CTA -->
+        <div class="lg:col-span-7 space-y-5">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>100% Honest Frontend • LocalStorage Workspace • No Fake Live API Claims</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-5xl font-extrabold text-white leading-tight tracking-tight">
+            हर YouTube Creator के लिए <span class="text-transparent bg-clip-text bg-gradient-to-r from-yt-red via-rose-400 to-amber-300">All-in-One Growth & AI SEO</span> स्टूडियो
+          </h1>
+
+          <p class="text-sm sm:text-base text-gray-300 leading-relaxed max-w-2xl">
+            अपने लोकल क्रिएटर अकाउंट से साइन-इन करें और एक या एक से अधिक YouTube Channels को <strong>Local Workspace</strong> में जोड़ें। हर चैनल की <strong>Category, Audience, Subscribers, Views और Watch Hours</strong> के अनुसार अलग AI Scripts, SEO Metadata, IST Upload Schedule, Monetisation Roadmap और 60-Day Growth Plan तैयार करें।
+          </p>
+
+          <!-- Primary Action Buttons -->
+          <div class="flex flex-wrap items-center gap-3 pt-1">
+            <button type="button" onclick="loginWithSandboxDemo()" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-sm sm:text-base font-bold shadow-xl transition flex items-center gap-3">
+              <i class="fa-solid fa-play text-base"></i>
+              <span>Open Full App (Instant Sandbox Demo)</span>
+            </button>
+
+            <button type="button" onclick="openGoogleAuthModal()" class="px-5 py-3.5 rounded-2xl bg-gradient-to-r from-yt-red to-rose-600 hover:from-rose-600 hover:to-yt-red text-white text-sm font-bold shadow-xl yt-glow transition flex items-center gap-2.5">
+              <i class="fa-brands fa-google text-base"></i>
+              <span>Sign in with Local Profile (Simulated OAuth)</span>
+            </button>
+          </div>
+
+          <!-- Transparency Note -->
+          <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-200/95 flex items-start gap-2.5 max-w-2xl">
+            <i class="fa-solid fa-circle-info text-amber-400 mt-0.5 shrink-0"></i>
+            <span>
+              <strong>Honest Architecture Notice:</strong> यह एक Frontend Web App है। सभी अकाउंट, चैनल डेटा और SEO बदलाव आपके ब्राउज़र के <strong>LocalStorage (Local/Demo Data)</strong> में सुरक्षित रहते हैं। जब तक Backend पर वास्तविक Google OAuth 2.0 और YouTube Data API v3 नहीं जुड़ते, कोई भी डेटा लाइव YouTube से सिंक नहीं होता।
+            </span>
+          </div>
+        </div>
+
+        <!-- Right SaaS Platform Capabilities Grid -->
+        <div class="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="saas-card rounded-2xl p-5 space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center text-lg"><i class="fa-solid fa-users-gear"></i></div>
+            <h3 class="text-sm font-bold text-white">Multi-User & Multi-Channel</h3>
+            <p class="text-xs text-gray-400 leading-relaxed">हर यूजर का डेटा अलग LocalStorage Namespace में सुरक्षित। एक अकाउंट में कई चैनल जोड़ें व तुरंत स्विच करें।</p>
+          </div>
+
+          <div class="saas-card rounded-2xl p-5 space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center text-lg"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <h3 class="text-sm font-bold text-white">Category-Aware AI Scripts & SEO</h3>
+            <p class="text-xs text-gray-400 leading-relaxed">चैनल की Niche व भाषा के अनुसार पूरी Video Script, 10 High-CTR Titles, Tags, Keywords और Description।</p>
+          </div>
+
+          <div class="saas-card rounded-2xl p-5 space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-lg"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            <h3 class="text-sm font-bold text-white">Dynamic YPP Monetisation</h3>
+            <p class="text-xs text-gray-400 leading-relaxed">आपके चैनल के वर्तमान Subscribers व Watch Hours के अनुसार ऑटोमैटिक अगला YPP माइलस्टोन ट्रैकिंग।</p>
+          </div>
+
+          <div class="saas-card rounded-2xl p-5 space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center text-lg"><i class="fa-solid fa-clock"></i></div>
+            <h3 class="text-sm font-bold text-white">IST Upload Time & 60-Day Plan</h3>
+            <p class="text-xs text-gray-400 leading-relaxed">हर चैनल के वीडियो रिकॉर्ड से Shorts व Long Videos का सर्वश्रेष्ठ IST समय और 60-Day एक्शन मैट्रिक्स।</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="border-t border-gray-800/70 py-4 px-4 sm:px-8 text-center text-xs text-gray-500">
+      YouTube Growth Booster • LocalStorage Multi-Creator Workspace • Transparent Demo & API Architecture
+    </footer>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- STATE B: AUTHENTICATED SAAS WORKSPACE                     -->
+  <!-- ========================================================= -->
+  <div id="auth-saas-app" class="hidden min-h-screen flex-col lg:flex-row">
+
+    <!-- Mobile Top Header + Scrollable All-Sections Tab Bar -->
+    <header class="lg:hidden sticky top-0 z-40 bg-[#0C0F17]/95 backdrop-blur-md border-b border-gray-800">
+      <div class="px-3.5 py-2.5 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2 min-w-0">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-yt-red to-rose-700 flex items-center justify-center shadow-lg yt-glow shrink-0">
+            <i class="fa-brands fa-youtube text-white text-base"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5">
+              <h1 class="font-bold text-sm tracking-tight text-white truncate">YT Growth Booster</h1>
+              <span class="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[9px] font-bold uppercase shrink-0">DEMO/LOCAL</span>
+            </div>
+            <p id="mobile-active-channel-label" class="text-[11px] text-gray-400 font-medium truncate">No Channel Connected</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button type="button" onclick="openConnectChannelModal()" class="text-[11px] px-2.5 py-1.5 rounded-xl bg-yt-red text-white font-semibold flex items-center gap-1">
+            <i class="fa-solid fa-plus"></i> Channel
+          </button>
+          <button type="button" onclick="toggleMobileDrawer()" aria-label="Menu" class="p-2 rounded-xl bg-gray-800/80 hover:bg-gray-700 text-gray-200 transition">
+            <i class="fa-solid fa-bars text-base"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Scrollable Top Tabs for All 8 Sections -->
+      <div class="flex items-center gap-1.5 px-3 pb-2.5 overflow-x-auto no-scrollbar border-t border-gray-800/60 pt-2">
+        <button type="button" onclick="navigateTo('dashboard')" data-top-tab="dashboard" class="top-tab-btn shrink-0 px-3 py-1.5 rounded-xl bg-yt-red text-white text-xs font-bold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-chart-line"></i> Dashboard
+        </button>
+        <button type="button" onclick="navigateTo('seo-generator')" data-top-tab="seo-generator" class="top-tab-btn shrink-0 px-3 py-1.5 rounded-xl bg-gray-900 border border-gray-800 text-gray-300 text-xs font-semibold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i> AI SEO & Script
+        </button>
+        <button type="button" onclick="navigateTo('upload-time')" data-top-tab="upload-time" class="top-tab-btn shrink-0 px-3 py-1.5 rounded-xl bg-gray-900 border border-gray-800 text-gray-300 text-xs font-semibold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-clock text-cyan-400"></i> Best Time (IST)
+        </button>
+        <button type="button" onclick="navigateTo('strategy')" data-top-tab="strategy" class="top-tab-btn shrink-0 px-3 py-1.5 rounded-xl bg-gray-900 border border-gray-800 text-gray-300 text-xs font-semibold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-chess-queen text-amber-400"></i> Growth Strategy
+        </button>
+        <button type="button" onclick="navigateTo('trends')" data-top-tab="trends" class="top-tab-btn shrink-0 px-3 py-1.5 rounded-xl bg-gray-900 border border-gray-800 text-gray-300 text-xs font-semibold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-fire-flame-curved text-orange-400"></i> Trends (Demo)
+        </button>
+        <button type="button" onclick="navigateTo('thumbnail')" data-top-tab="thumbnail" class="top-tab-btn shrink-0 px-3 py-1.5 rounded-xl bg-gray-900 border border-gray-800 text-gray-300 text-xs font-semibold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-image text-pink-400"></i> Thumbnail Maker
+        </button>
+        <button type="button" onclick="navigateTo('mission')" data-top-tab="mission" class="top-tab-btn shrink-0 px-3 py-1.5 rounded-xl bg-gray-900 border border-gray-800 text-gray-300 text-xs font-semibold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-calendar-check text-emerald-400"></i> 60-Day Plan
+        </button>
+        <button type="button" onclick="navigateTo('connect')" data-top-tab="connect" class="top-tab-btn shrink-0 px-3 py-1.5 rounded-xl bg-gray-900 border border-gray-800 text-gray-300 text-xs font-semibold transition flex items-center gap-1.5">
+          <i class="fa-brands fa-youtube text-yt-red"></i> Channel & Auto SEO
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile Drawer Overlay -->
+    <div id="mobile-drawer-backdrop" onclick="toggleMobileDrawer()" class="fixed inset-0 bg-black/75 backdrop-blur-xs z-40 hidden lg:hidden"></div>
+
+    <!-- Desktop & Drawer Left Sidebar -->
+    <aside id="sidebar" class="fixed lg:sticky top-0 left-0 z-50 h-screen w-[272px] bg-yt-sidebar border-r border-yt-border flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-out shrink-0">
+      <div class="flex flex-col min-h-0 flex-1">
+        <!-- Brand Header -->
+        <div class="p-4 border-b border-yt-border flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-yt-red to-rose-700 flex items-center justify-center shadow-lg yt-glow">
+              <i class="fa-brands fa-youtube text-white text-lg"></i>
+            </div>
+            <div>
+              <h1 class="font-extrabold text-sm text-white tracking-tight">YT Growth Booster</h1>
+              <span class="text-[10px] font-bold text-amber-400 tracking-wider uppercase">Local / Demo Studio</span>
+            </div>
+          </div>
+          <button type="button" onclick="toggleMobileDrawer()" class="lg:hidden p-2 text-gray-400 hover:text-white">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <!-- Isolated User & Active Channel Selector Box -->
+        <div class="mx-3 mt-3 p-3 rounded-2xl bg-[#121726] border border-yt-border space-y-2.5 shrink-0">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5 min-w-0">
+              <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+              <span id="sidebar-user-email" class="text-[11px] text-gray-300 font-medium truncate">user@local.app</span>
+            </div>
+            <button type="button" onclick="openGoogleAuthModal()" class="text-[10px] px-2 py-0.5 rounded-md bg-sky-500/15 text-sky-300 hover:bg-sky-500/25 font-semibold shrink-0">
+              Switch
+            </button>
+          </div>
+
+          <div id="sidebar-channel-box"></div>
+        </div>
+
+        <!-- 8-Section Navigation Links -->
+        <nav class="mt-3 px-3 space-y-1 overflow-y-auto flex-1 pb-2">
+          <button type="button" data-nav="dashboard" onclick="navigateTo('dashboard')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all bg-yt-red text-white shadow-md">
+            <i class="fa-solid fa-chart-line w-4 text-center"></i>
+            <div class="text-left">
+              <span class="block leading-none font-semibold">1. Dashboard & YPP</span>
+              <span class="text-[10px] opacity-80">डैशबोर्ड & मोनेटाइजेशन</span>
+            </div>
+          </button>
+
+          <button type="button" data-nav="seo-generator" onclick="navigateTo('seo-generator')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-gray-300 hover:bg-gray-800/80 hover:text-white transition-all">
+            <i class="fa-solid fa-wand-magic-sparkles w-4 text-center text-purple-400"></i>
+            <div class="text-left">
+              <span class="block leading-none font-semibold">2. AI Script & SEO</span>
+              <span class="text-[10px] text-gray-400">स्क्रिप्ट, टाइटल & कीवर्ड्स</span>
+            </div>
+          </button>
+
+          <button type="button" data-nav="upload-time" onclick="navigateTo('upload-time')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-gray-300 hover:bg-gray-800/80 hover:text-white transition-all">
+            <i class="fa-solid fa-clock w-4 text-center text-cyan-400"></i>
+            <div class="text-left">
+              <span class="block leading-none font-semibold">3. Best Upload Time</span>
+              <span class="text-[10px] text-gray-400">IST समय & परफॉर्मेंस</span>
+            </div>
+          </button>
+
+          <button type="button" data-nav="strategy" onclick="navigateTo('strategy')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-gray-300 hover:bg-gray-800/80 hover:text-white transition-all">
+            <i class="fa-solid fa-chess-queen w-4 text-center text-amber-400"></i>
+            <div class="text-left">
+              <span class="block leading-none font-semibold">4. Growth Strategy</span>
+              <span class="text-[10px] text-gray-400">कस्टम ग्रोथ & कंटेंट प्लान</span>
+            </div>
+          </button>
+
+          <button type="button" data-nav="trends" onclick="navigateTo('trends')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-gray-300 hover:bg-gray-800/80 hover:text-white transition-all">
+            <i class="fa-solid fa-fire-flame-curved w-4 text-center text-orange-400"></i>
+            <div class="text-left">
+              <span class="block leading-none font-semibold">5. Daily Trends (Demo)</span>
+              <span class="text-[10px] text-gray-400">क्यूरेटेड ट्रेंड्स & गैप</span>
+            </div>
+          </button>
+
+          <button type="button" data-nav="thumbnail" onclick="navigateTo('thumbnail')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-gray-300 hover:bg-gray-800/80 hover:text-white transition-all">
+            <i class="fa-solid fa-image w-4 text-center text-pink-400"></i>
+            <div class="text-left">
+              <span class="block leading-none font-semibold">6. 16:9 Thumbnail Maker</span>
+              <span class="text-[10px] text-gray-400">HD कैनवास & AI प्रॉम्प्ट</span>
+            </div>
+          </button>
+
+          <button type="button" data-nav="mission" onclick="navigateTo('mission')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-gray-300 hover:bg-gray-800/80 hover:text-white transition-all">
+            <i class="fa-solid fa-calendar-check w-4 text-center text-emerald-400"></i>
+            <div class="text-left">
+              <span class="block leading-none font-semibold">7. 60-Day Mission Plan</span>
+              <span class="text-[10px] text-gray-400">डेली अपलोड & ग्रोथ ट्रैकर</span>
+            </div>
+          </button>
+
+          <button type="button" data-nav="connect" onclick="navigateTo('connect')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-gray-300 hover:bg-gray-800/80 hover:text-white transition-all">
+            <i class="fa-brands fa-youtube w-4 text-center text-yt-red"></i>
+            <div class="text-left">
+              <span class="block leading-none font-semibold">8. Channel & Auto SEO</span>
+              <span class="text-[10px] text-gray-400">चैनल, OAuth & मेटाडेटा</span>
+            </div>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Bottom User Isolation & Sign Out -->
+      <div class="p-3.5 border-t border-yt-border space-y-2 shrink-0">
+        <div class="flex items-center justify-between text-[11px] text-gray-400 px-1">
+          <span>Storage Mode:</span>
+          <span class="text-amber-300 font-semibold"><i class="fa-solid fa-database mr-1"></i>Local Browser</span>
+        </div>
+        <button type="button" onclick="signOutCurrentUser()" class="w-full py-2 px-3 rounded-xl bg-gray-900 hover:bg-red-950/60 hover:text-red-300 text-gray-400 text-xs font-semibold border border-gray-800 transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Fluid Workspace -->
+    <div class="flex-1 min-w-0 flex flex-col pb-24 lg:pb-10">
+      <!-- Sticky Top Desktop Header -->
+      <header class="hidden lg:flex items-center justify-between px-8 py-3.5 border-b border-yt-border bg-[#090B10]/90 backdrop-blur-md sticky top-0 z-30 gap-4">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2.5">
+            <h2 id="page-title" class="text-lg font-bold text-white truncate">Creator Growth Dashboard</h2>
+            <span id="header-data-mode-badge" class="px-2.5 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[10px] font-bold uppercase tracking-wider">
+              LOCAL / DEMO WORKSPACE
+            </span>
+          </div>
+          <p id="page-subtitle" class="text-xs text-gray-400 truncate">Browser LocalStorage Workspace • No Live YouTube API Connected</p>
+        </div>
+
+        <div class="flex items-center gap-3 shrink-0">
+          <div id="topbar-channel-selector-wrap" class="flex items-center gap-2"></div>
+
+          <button type="button" onclick="openConnectChannelModal()" class="px-3.5 py-2 rounded-xl bg-yt-red hover:bg-yt-darkred text-white text-xs font-bold shadow-lg transition flex items-center gap-1.5">
+            <i class="fa-solid fa-plus"></i> Add Channel (Local)
+          </button>
+
+          <button type="button" onclick="openGoogleAuthModal()" class="px-3 py-2 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 text-gray-200 text-xs font-semibold transition flex items-center gap-2">
+            <i class="fa-brands fa-google text-amber-400"></i>
+            <span id="header-user-display">Creator</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Fluid Container -->
+      <main class="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-5 space-y-6">
+
+        <!-- ========================================================= -->
+        <!-- ZERO-CHANNEL ONBOARDING STATE (SHOWN WHEN USER HAS 0 CH)  -->
+        <!-- ========================================================= -->
+        <div id="zero-channel-onboarding" class="hidden saas-card rounded-3xl p-8 sm:p-12 text-center max-w-3xl mx-auto my-8 space-y-6">
+          <div class="w-16 h-16 rounded-2xl bg-yt-red/15 text-yt-red border border-yt-red/30 flex items-center justify-center text-3xl mx-auto shadow-lg yt-glow">
+            <i class="fa-brands fa-youtube"></i>
+          </div>
+          <div class="space-y-2">
+            <span class="px-3 py-1 rounded-full bg-amber-500/15 text-amber-300 text-xs font-bold">
+              Welcome, <span id="onboard-user-name">Creator</span>! (Local Workspace)
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">अपना पहला YouTube Channel Profile जोड़ें</h2>
+            <p class="text-sm text-gray-400 max-w-xl mx-auto leading-relaxed">
+              आपके इस ब्राउज़र Local Workspace में अभी कोई चैनल प्रोफ़ाइल जुड़ी नहीं है। नीचे दिए गए बटन से अपना चैनल जोड़ें — सभी आंकड़े आपके ब्राउज़र के <code>localStorage</code> में Local/Demo डेटा के रूप में सेव रहेंगे।
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <button type="button" onclick="openConnectChannelModal()" class="px-6 py-3.5 rounded-2xl bg-yt-red hover:bg-yt-darkred text-white text-sm font-bold shadow-xl yt-glow transition flex items-center gap-2.5">
+              <i class="fa-brands fa-youtube text-lg"></i>
+              <span>Add Channel Profile (Local / Demo)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- ACTIVE CHANNEL WORKSPACE SECTIONS (ALL 8 SECTIONS)        -->
+        <!-- ========================================================= -->
+        <div id="active-channel-sections" class="space-y-6">
+
+          <!-- ======================================================= -->
+          <!-- SECTION 1: DASHBOARD & DYNAMIC MONETISATION             -->
+          <!-- ======================================================= -->
+          <section id="section-dashboard" class="section-view active space-y-6">
+            <!-- Honest Data Mode Banner -->
+            <div class="rounded-2xl p-3.5 bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-amber-200">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-database text-amber-400 shrink-0"></i>
+                <span><strong>Local / Demo Analytics Mode:</strong> नीचे दिखाए गए Subscribers, Views और Watch Hours आपके ब्राउज़र के <code>localStorage</code> में सेव हैं (Live YouTube API से सिंक नहीं हैं)।</span>
+              </div>
+              <button type="button" onclick="openEditChannelStatsModal()" class="self-start sm:self-center text-amber-300 underline font-bold shrink-0">Edit Local Stats</button>
+            </div>
+
+            <!-- Dynamic Channel Hero Banner -->
+            <div class="saas-card rounded-2xl p-5 sm:p-6 relative overflow-hidden">
+              <div class="absolute -right-16 -top-16 w-64 h-64 bg-yt-red/10 rounded-full blur-3xl pointer-events-none"></div>
+              <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-5">
+                <div class="space-y-1.5">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span id="dash-connection-badge" class="px-2.5 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[11px] font-bold uppercase">
+                      LOCAL / DEMO PROFILE
+                    </span>
+                    <span id="dash-category-pill" class="px-2.5 py-0.5 rounded-md bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-semibold">
+                      Category
+                    </span>
+                    <span id="dash-lang-pill" class="px-2.5 py-0.5 rounded-md bg-gray-800 text-gray-300 text-xs font-medium">
+                      Language
+                    </span>
+                  </div>
+                  <h3 class="text-2xl sm:text-3xl font-extrabold text-white">
+                    <span id="dash-channel-name">Channel Name</span>
+                    <span id="dash-channel-handle" class="text-sm font-normal text-gray-400 ml-2">@handle</span>
+                  </h3>
+                  <p id="dash-milestone-summary" class="text-sm text-gray-300">
+                    Dynamic subscriber & watch-hour milestone analysis
+                  </p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+                  <button type="button" onclick="openEditChannelStatsModal()" class="px-4 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white text-xs sm:text-sm font-semibold transition flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-sky-400"></i> Update Local Metrics
+                  </button>
+                  <button type="button" onclick="navigateTo('seo-generator')" class="px-4 py-2.5 rounded-xl bg-yt-red hover:bg-yt-darkred text-white text-xs sm:text-sm font-bold shadow-lg transition flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> AI Script & SEO
+                  </button>
+                </div>
+              </div>
+
+              <!-- Dynamic Dual YPP Monetisation Progress Bars -->
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-6 pt-5 border-t border-gray-800/80">
+                <div class="bg-gray-900/70 p-4 rounded-xl border border-gray-800">
+                  <div class="flex justify-between text-xs font-semibold mb-2">
+                    <span id="dash-subs-milestone-label" class="text-gray-300">Next Subscriber Milestone</span>
+                    <span id="dash-subs-milestone-pct" class="text-emerald-400 font-bold">0%</span>
+                  </div>
+                  <div class="w-full h-3 bg-gray-800 rounded-full overflow-hidden p-0.5">
+                    <div id="dash-subs-milestone-bar" class="h-full rounded-full bg-gradient-to-r from-yt-red via-rose-500 to-amber-400 transition-all duration-500" style="width: 0%"></div>
+                  </div>
+                  <p id="dash-subs-milestone-hint" class="text-[11px] text-gray-400 mt-1.5"></p>
+                </div>
+
+                <div class="bg-gray-900/70 p-4 rounded-xl border border-gray-800">
+                  <div class="flex justify-between text-xs font-semibold mb-2">
+                    <span id="dash-watch-milestone-label" class="text-gray-300">YPP Watch Hours Progress</span>
+                    <span id="dash-watch-milestone-pct" class="text-sky-400 font-bold">0%</span>
+                  </div>
+                  <div class="w-full h-3 bg-gray-800 rounded-full overflow-hidden p-0.5">
+                    <div id="dash-watch-milestone-bar" class="h-full rounded-full bg-gradient-to-r from-sky-500 to-emerald-400 transition-all duration-500" style="width: 0%"></div>
+                  </div>
+                  <p id="dash-watch-milestone-hint" class="text-[11px] text-gray-400 mt-1.5"></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4 KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5">
+              <div class="saas-card rounded-2xl p-5">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Subscribers (Local)</span>
+                  <div class="w-9 h-9 rounded-xl bg-yt-red/15 text-yt-red flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
+                </div>
+                <div class="mt-3 flex items-baseline gap-2">
+                  <span id="kpi-subs" class="text-3xl font-extrabold text-white">0</span>
+                </div>
+                <p id="kpi-subs-subtext" class="text-xs text-gray-400 mt-1.5">Next Target: --</p>
+              </div>
+
+              <div class="saas-card rounded-2xl p-5">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Views (Local)</span>
+                  <div class="w-9 h-9 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center"><i class="fa-solid fa-eye"></i></div>
+                </div>
+                <div class="mt-3 flex items-baseline gap-2">
+                  <span id="kpi-views" class="text-3xl font-extrabold text-white">0</span>
+                </div>
+                <p id="kpi-views-subtext" class="text-xs text-gray-400 mt-1.5">Avg Views/Video: --</p>
+              </div>
+
+              <div class="saas-card rounded-2xl p-5">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Watch Hours (Local)</span>
+                  <div class="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center"><i class="fa-solid fa-clock"></i></div>
+                </div>
+                <div class="mt-3 flex items-baseline gap-2">
+                  <span id="kpi-watch" class="text-3xl font-extrabold text-white">0</span>
+                  <span class="text-xs text-gray-400">hrs</span>
+                </div>
+                <p id="kpi-watch-subtext" class="text-xs text-gray-400 mt-1.5">YPP Threshold: 3,000 / 4,000 hrs</p>
+              </div>
+
+              <div class="saas-card rounded-2xl p-5">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Suggested Window (IST)</span>
+                  <div class="w-9 h-9 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center"><i class="fa-solid fa-bolt"></i></div>
+                </div>
+                <div class="mt-3">
+                  <span id="kpi-ist-window" class="text-xl font-extrabold text-cyan-300">--</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-1.5 flex items-center justify-between">
+                  <span id="kpi-ist-days">--</span>
+                  <button type="button" onclick="navigateTo('upload-time')" class="text-cyan-400 hover:underline font-semibold">Details →</button>
+                </p>
+              </div>
+            </div>
+
+            <!-- Chart.js Projection + Per-Channel Daily Tasks -->
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+              <div class="xl:col-span-8 saas-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                  <div>
+                    <h4 class="text-base font-bold text-white">60-Day Simulated Growth Projection</h4>
+                    <p id="dash-chart-caption" class="text-xs text-gray-400">वर्तमान लोकल आंकड़ों के आधार पर अनुमानित 60-दिन मॉडल (Simulated Model)</p>
+                  </div>
+                  <button type="button" onclick="navigateTo('mission')" class="px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-xs font-semibold text-emerald-400">
+                    Open 60-Day Tracker →
+                  </button>
+                </div>
+                <div class="relative w-full h-72">
+                  <canvas id="dashboardGrowthChart"></canvas>
+                </div>
+              </div>
+
+              <div class="xl:col-span-4 saas-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-3">
+                    <div>
+                      <h4 class="text-base font-bold text-white">Channel Action Tasks</h4>
+                      <p class="text-xs text-gray-400">LocalStorage में सेव होने वाले टास्क</p>
+                    </div>
+                    <span id="tasks-counter-badge" class="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 text-xs font-bold">0 / 0</span>
+                  </div>
+                  <div id="daily-tasks-list" class="space-y-2.5 mt-4 max-h-64 overflow-y-auto pr-1"></div>
+                </div>
+                <form onsubmit="addCustomDailyTask(event)" class="mt-4 pt-3 border-t border-gray-800 flex gap-2">
+                  <input id="new-task-input" type="text" placeholder="नया टास्क जोड़ें..." class="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-yt-red" />
+                  <button type="submit" class="px-3.5 py-2 rounded-xl bg-yt-red hover:bg-yt-darkred text-white text-xs font-semibold transition"><i class="fa-solid fa-plus"></i></button>
+                </form>
+              </div>
+            </div>
+          </section>
+
+          <!-- ======================================================= -->
+          <!-- SECTION 2: AI CONTENT, SCRIPT & SEO GENERATOR           -->
+          <!-- ======================================================= -->
+          <section id="section-seo-generator" class="section-view space-y-6">
+            <div class="saas-card rounded-2xl p-5 sm:p-6">
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5">
+                <div>
+                  <h3 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i>
+                    Category-Aware Script & SEO Generator (Local Engine)
+                  </h3>
+                  <p class="text-xs sm:text-sm text-gray-400 mt-1">
+                    चैनल की Category और भाषा के अनुसार <strong>Video Script</strong>, <strong>10 High-CTR Titles</strong>, <strong>SEO Description</strong>, <strong>Hashtags</strong>, <strong>Tags</strong>, <strong>Keywords</strong> और <strong>Thumbnail Text Ideas</strong> तैयार करें।
+                  </p>
+                </div>
+                <span id="seo-channel-context-badge" class="self-start md:self-center px-3 py-1.5 rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-300 text-xs font-semibold">
+                  Channel Context
+                </span>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                <div class="lg:col-span-7">
+                  <label class="block text-xs font-semibold text-gray-300 mb-1.5">Video Topic या Rough Idea लिखें *</label>
+                  <textarea id="seo-topic-input" rows="3" placeholder="अपने चैनल की Category से जुड़ा वीडियो टॉपिक लिखें..." class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-yt-red transition"></textarea>
+                </div>
+                <div class="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1.5">Content Language</label>
+                    <select id="seo-lang-select" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-yt-red">
+                      <option value="hinglish">Hindi + English Mix (Hinglish)</option>
+                      <option value="hindi">Pure Hindi (शुद्ध हिंदी)</option>
+                      <option value="english">Global English</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1.5">Video Format</label>
+                    <select id="seo-format-select" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-yt-red">
+                      <option value="long">Long Video (8–12 Min Deep Guide)</option>
+                      <option value="short">YouTube Short (45–60 Sec High-Retention)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                <button type="button" onclick="suggestTopicForActiveChannel()" class="text-xs px-3.5 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-sky-300 font-semibold transition flex items-center gap-1.5">
+                  <i class="fa-solid fa-lightbulb"></i> Auto-Suggest Topic for My Niche
+                </button>
+                <div class="flex flex-wrap items-center gap-2.5">
+                  <button type="button" onclick="sendGeneratedSeoToAutoUpdate()" id="send-to-autoseo-btn" class="hidden px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-semibold transition flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Send to Local SEO Draft
+                  </button>
+                  <button type="button" onclick="generateFullSeoPack()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-yt-red to-rose-600 hover:from-rose-600 hover:to-yt-red text-white text-xs sm:text-sm font-bold shadow-lg yt-glow transition flex items-center gap-2">
+                    <i class="fa-solid fa-bolt"></i> Generate Script & Complete SEO
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div id="seo-results-container" class="space-y-6"></div>
+          </section>
+
+          <!-- ======================================================= -->
+          <!-- SECTION 3: BEST UPLOAD TIME ANALYZER (IST)              -->
+          <!-- ======================================================= -->
+          <section id="section-upload-time" class="section-view space-y-6">
+            <div id="upload-time-confidence-banner" class="rounded-2xl p-5"></div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="saas-card rounded-2xl p-6 border-yt-red/40">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="px-3 py-1 rounded-full bg-yt-red/20 text-yt-red text-xs font-bold flex items-center gap-1.5">
+                    <i class="fa-solid fa-bolt"></i> Shorts Best Upload Time
+                  </span>
+                  <span class="text-xs font-mono text-gray-400">Asia/Kolkata (IST)</span>
+                </div>
+                <p id="best-shorts-time-ist" class="text-2xl sm:text-3xl font-extrabold text-white">--</p>
+                <p id="best-shorts-days" class="text-sm text-emerald-400 font-semibold mt-1">--</p>
+                <p id="best-shorts-reason" class="text-xs text-gray-300 mt-3 leading-relaxed bg-gray-900/90 p-3.5 rounded-xl border border-gray-800"></p>
+              </div>
+
+              <div class="saas-card rounded-2xl p-6 border-sky-500/40">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 text-xs font-bold flex items-center gap-1.5">
+                    <i class="fa-solid fa-video"></i> Long Videos Best Upload Time
+                  </span>
+                  <span class="text-xs font-mono text-gray-400">Asia/Kolkata (IST)</span>
+                </div>
+                <p id="best-long-time-ist" class="text-2xl sm:text-3xl font-extrabold text-white">--</p>
+                <p id="best-long-days" class="text-sm text-sky-300 font-semibold mt-1">--</p>
+                <p id="best-long-reason" class="text-xs text-gray-300 mt-3 leading-relaxed bg-gray-900/90 p-3.5 rounded-xl border border-gray-800"></p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+              <div class="xl:col-span-6 saas-card rounded-2xl p-5 sm:p-6">
+                <div class="flex items-center justify-between mb-3">
+                  <div>
+                    <h4 class="text-base font-bold text-white">IST Time-Slot Score (Estimated / Local Data)</h4>
+                    <p class="text-xs text-gray-400">चैनल के लोकल वीडियो रिकॉर्ड के अनुसार सुबह से रात तक (IST) व्यूज स्कोर</p>
+                  </div>
+                  <span class="text-[11px] px-2.5 py-1 rounded-lg bg-cyan-500/15 text-cyan-300 font-semibold">IST (UTC+5:30)</span>
+                </div>
+                <div class="relative w-full h-64">
+                  <canvas id="istPerformanceChart"></canvas>
+                </div>
+              </div>
+
+              <div class="xl:col-span-6 saas-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between space-y-4">
+                <div>
+                  <div class="flex items-center justify-between mb-3">
+                    <div>
+                      <h4 class="text-base font-bold text-white">Local Video Publish History</h4>
+                      <p class="text-xs text-gray-400">पुराने वीडियो का दिन, समय (IST) और प्रदर्शन (LocalStorage)</p>
+                    </div>
+                    <span id="upload-sample-count-badge" class="text-xs px-2.5 py-1 rounded-lg bg-gray-800 text-gray-300 font-semibold">0 Videos</span>
+                  </div>
+
+                  <div class="overflow-x-auto max-h-52 overflow-y-auto rounded-xl border border-gray-800">
+                    <table class="w-full text-left border-collapse text-xs">
+                      <thead class="bg-gray-900 text-gray-400 sticky top-0">
+                        <tr>
+                          <th class="py-2.5 px-3">Video</th>
+                          <th class="py-2.5 px-3">Day & Time (IST)</th>
+                          <th class="py-2.5 px-3">Type</th>
+                          <th class="py-2.5 px-3 text-right">Views / CTR</th>
+                        </tr>
+                      </thead>
+                      <tbody id="publish-history-tbody" class="divide-y divide-gray-800/80"></tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <form onsubmit="addVideoPerformanceRecord(event)" class="pt-3 border-t border-gray-800 space-y-2.5">
+                  <p class="text-xs font-semibold text-gray-300"><i class="fa-solid fa-plus-circle text-cyan-400 mr-1"></i> लोकल वीडियो रिकॉर्ड जोड़ें (IST Analyzer में जोड़ें):</p>
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <select id="new-vid-day" class="bg-gray-900 border border-gray-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
+                      <option value="Sunday">Sunday</option>
+                      <option value="Monday">Monday</option>
+                      <option value="Tuesday">Tuesday</option>
+                      <option value="Wednesday">Wednesday</option>
+                      <option value="Thursday">Thursday</option>
+                      <option value="Friday">Friday</option>
+                      <option value="Saturday">Saturday</option>
+                    </select>
+                    <select id="new-vid-time" class="bg-gray-900 border border-gray-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
+                      <option value="09:00 AM IST">09:00 AM IST</option>
+                      <option value="01:00 PM IST">01:00 PM IST</option>
+                      <option value="05:30 PM IST">05:30 PM IST</option>
+                      <option value="07:00 PM IST" selected>07:00 PM IST</option>
+                      <option value="08:30 PM IST">08:30 PM IST</option>
+                      <option value="10:00 PM IST">10:00 PM IST</option>
+                    </select>
+                    <select id="new-vid-type" class="bg-gray-900 border border-gray-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
+                      <option value="Short">Short</option>
+                      <option value="Long">Long Video</option>
+                    </select>
+                    <input id="new-vid-views" type="number" min="1" placeholder="Views" required class="bg-gray-900 border border-gray-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
+                  </div>
+                  <div class="flex gap-2">
+                    <input id="new-vid-title" type="text" placeholder="Video Title..." required class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-white" />
+                    <button type="submit" class="px-3.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold transition">Add Record</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </section>
+
+          <!-- ======================================================= -->
+          <!-- SECTION 4: PERSONALIZED GROWTH STRATEGY                 -->
+          <!-- ======================================================= -->
+          <section id="section-strategy" class="section-view space-y-6">
+            <div class="saas-card rounded-2xl p-5 sm:p-6">
+              <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div>
+                  <span class="px-3 py-1 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 text-xs font-bold">
+                    CATEGORY-BASED GROWTH BLUEPRINT
+                  </span>
+                  <h3 id="strategy-headline" class="text-xl sm:text-2xl font-bold text-white mt-2">Personalized Strategy</h3>
+                  <p id="strategy-subheadline" class="text-xs sm:text-sm text-gray-400 mt-1"></p>
+                </div>
+                <button type="button" onclick="renderPersonalizedStrategy(true)" class="self-start lg:self-center px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-gray-950 text-xs font-bold shadow-lg transition flex items-center gap-2 shrink-0">
+                  <i class="fa-solid fa-arrows-rotate"></i> Recalculate Strategy
+                </button>
+              </div>
+
+              <div id="strategy-pillars-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mt-6"></div>
+            </div>
+
+            <div class="saas-card rounded-2xl p-5 sm:p-6 space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h4 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-week text-yt-red"></i>
+                    7-Day Personalized Content, Script & SEO Plan
+                  </h4>
+                  <p class="text-xs text-gray-400">आपकी Category, Audience और IST Upload Window के अनुसार तैयार डेली प्लान</p>
+                </div>
+                <span id="strategy-format-mix-badge" class="px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 text-xs font-semibold"></span>
+              </div>
+
+              <div id="strategy-daily-plan-list" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+            </div>
+          </section>
+
+          <!-- ======================================================= -->
+          <!-- SECTION 5: DAILY NICHE TRENDS (TRANSPARENT DEMO DATA)   -->
+          <!-- ======================================================= -->
+          <section id="section-trends" class="section-view space-y-6">
+            <div class="rounded-2xl p-4 sm:p-5 bg-amber-500/10 border border-amber-500/35 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center shrink-0 mt-0.5">
+                  <i class="fa-solid fa-shield-halved text-lg"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="px-2.5 py-0.5 rounded-md bg-amber-500/25 text-amber-200 text-[11px] font-bold uppercase">CURATED / DEMO RESEARCH DATA ONLY</span>
+                    <h4 class="text-sm sm:text-base font-bold text-white">Not Live YouTube Trends API</h4>
+                  </div>
+                  <p class="text-xs sm:text-sm text-gray-300 mt-1">
+                    ये आइडियाज़ <strong>Curated Category Research (Static/Demo Data)</strong> हैं, लाइव Google/YouTube API से नहीं आए हैं। असली ट्रेंडिंग डेटा के लिए Backend पर <code>YouTube Data API v3</code> जोड़ना अनिवार्य है।
+                  </p>
+                </div>
+              </div>
+              <button type="button" onclick="navigateTo('connect')" class="shrink-0 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-gray-950 text-xs font-bold transition">
+                OAuth & API Info →
+              </button>
+            </div>
+
+            <div id="trends-content-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+          </section>
+
+          <!-- ======================================================= -->
+          <!-- SECTION 6: 16:9 THUMBNAIL STUDIO                        -->
+          <!-- ======================================================= -->
+          <section id="section-thumbnail" class="section-view space-y-6">
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+              <div class="xl:col-span-5 saas-card rounded-2xl p-5 space-y-4">
+                <div>
+                  <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-image text-pink-400"></i>
+                    16:9 YouTube Thumbnail Studio
+                  </h3>
+                  <p class="text-xs text-gray-400 mt-0.5">High-CTR थंबनेल डिज़ाइन करें और 1280×720 HD PNG डाउनलोड करें</p>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-1.5">Quick High-CTR Presets</label>
+                  <div id="thumb-presets-bar" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">Main Bold Hook Text</label>
+                  <input id="thumb-main-text" oninput="renderThumbnailCanvas()" type="text" value="COMPLETE GUIDE 2026!" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-yt-red" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Sub-Text / Badge</label>
+                    <input id="thumb-sub-text" oninput="renderThumbnailCanvas()" type="text" value="STEP BY STEP 🔥" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-yt-red" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Top Pill Tag</label>
+                    <input id="thumb-badge-text" oninput="renderThumbnailCanvas()" type="text" value="PRO CREATOR TIPS" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-yt-red" />
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Background Theme</label>
+                    <select id="thumb-bg-style" onchange="renderThumbnailCanvas()" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-yt-red">
+                      <option value="red">Crimson Studio Dark</option>
+                      <option value="cyber">Electric Cyan & Indigo</option>
+                      <option value="gold">Royal Gold & Charcoal</option>
+                      <option value="emerald">Emerald Growth Dark</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Text Accent Color</label>
+                    <select id="thumb-accent-color" onchange="renderThumbnailCanvas()" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-yt-red">
+                      <option value="#FACC15">Bright Yellow (#FACC15)</option>
+                      <option value="#FFFFFF">Pure White (#FFFFFF)</option>
+                      <option value="#34D399">Mint Green (#34D399)</option>
+                      <option value="#38BDF8">Sky Cyan (#38BDF8)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">Custom Photo Overlay (Optional)</label>
+                  <input type="file" accept="image/*" onchange="handleThumbImageUpload(event)" class="w-full text-xs text-gray-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-gray-800 file:text-white hover:file:bg-gray-700" />
+                </div>
+
+                <div class="pt-2 flex flex-wrap gap-2.5">
+                  <button type="button" onclick="downloadThumbnailPng()" class="flex-1 py-2.5 px-4 rounded-xl bg-yt-red hover:bg-yt-darkred text-white text-xs sm:text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-download"></i> Download PNG (1280×720)
+                  </button>
+                  <button type="button" onclick="saveThumbnailToGallery()" class="py-2.5 px-4 rounded-xl bg-gray-800 hover:bg-gray-700 text-white text-xs sm:text-sm font-semibold border border-gray-700 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-bookmark text-amber-400"></i> Save (Local)
+                  </button>
+                </div>
+              </div>
+
+              <div class="xl:col-span-7 space-y-5">
+                <div class="saas-card rounded-2xl p-5">
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Live 16:9 Canvas Preview (1280 × 720 HD)</span>
+                    <span class="text-xs text-emerald-400 font-medium"><i class="fa-solid fa-check-circle mr-1"></i>High-CTR Safe Zones</span>
+                  </div>
+                  <div class="w-full aspect-video rounded-xl overflow-hidden border border-gray-700 bg-black shadow-2xl">
+                    <canvas id="thumbnailCanvas" width="1280" height="720" class="w-full h-full block"></canvas>
+                  </div>
+                </div>
+
+                <div class="saas-card rounded-2xl p-5">
+                  <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                      <i class="fa-solid fa-robot text-sky-400"></i>
+                      AI Image Generation Prompt (Copy for Midjourney / Gemini / Ideogram)
+                    </h4>
+                    <button type="button" onclick="generateAiThumbPrompt()" class="text-xs px-3 py-1 rounded-lg bg-sky-500/20 text-sky-300 hover:bg-sky-500/30 font-semibold">
+                      Refresh Prompt
+                    </button>
+                  </div>
+                  <textarea id="ai-thumb-prompt-box" rows="2" readonly class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-xs text-gray-200 font-mono focus:outline-none"></textarea>
+                  <button type="button" onclick="copyTextById('ai-thumb-prompt-box')" class="mt-2 px-3.5 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-xs font-semibold text-white flex items-center gap-1.5">
+                    <i class="fa-regular fa-copy"></i> Copy AI Prompt
+                  </button>
+                </div>
+
+                <div class="saas-card rounded-2xl p-5">
+                  <h4 class="text-sm font-bold text-white mb-3">Local Saved Thumbnails (<span id="saved-thumbs-count">0</span>)</h4>
+                  <div id="saved-thumbnails-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ======================================================= -->
+          <!-- SECTION 7: 60 DAYS GROWTH PLAN (PER CHANNEL)            -->
+          <!-- ======================================================= -->
+          <section id="section-mission" class="section-view space-y-6">
+            <div class="saas-card rounded-2xl p-5 sm:p-6">
+              <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div>
+                  <span id="mission-channel-badge" class="px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs font-bold">
+                    60-DAY LOCAL PLAN
+                  </span>
+                  <h3 class="text-xl font-bold text-white mt-2">Channel 60-Day Upload & Growth Tracker</h3>
+                  <p id="mission-dynamic-goal-desc" class="text-xs sm:text-sm text-gray-400 mt-1"></p>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 shrink-0">
+                  <div class="p-3 rounded-xl bg-gray-900 border border-gray-800 text-center">
+                    <span class="text-[11px] text-gray-400 block">Days Active</span>
+                    <span id="mission-days-done" class="text-lg font-extrabold text-white">0 / 60</span>
+                  </div>
+                  <div class="p-3 rounded-xl bg-gray-900 border border-gray-800 text-center">
+                    <span class="text-[11px] text-gray-400 block">Shorts Logged</span>
+                    <span id="mission-shorts-done" class="text-lg font-extrabold text-yt-red">0</span>
+                  </div>
+                  <div class="p-3 rounded-xl bg-gray-900 border border-gray-800 text-center">
+                    <span class="text-[11px] text-gray-400 block">Long Videos</span>
+                    <span id="mission-longs-done" class="text-lg font-extrabold text-sky-400">0</span>
+                  </div>
+                  <div class="p-3 rounded-xl bg-gray-900 border border-gray-800 text-center">
+                    <span class="text-[11px] text-gray-400 block">Plan Subs +</span>
+                    <span id="mission-subs-gained" class="text-lg font-extrabold text-emerald-400">+0</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div class="lg:col-span-4 saas-card rounded-2xl p-5 space-y-4 h-fit">
+                <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+                  <div>
+                    <h4 id="selected-day-title" class="text-lg font-bold text-white">Day 1 Log</h4>
+                    <p id="selected-day-plan" class="text-xs text-amber-300"></p>
+                  </div>
+                  <span id="selected-day-status" class="px-2.5 py-1 rounded-lg bg-gray-800 text-gray-300 text-xs font-semibold">Pending</span>
+                </div>
+
+                <div class="space-y-3">
+                  <label class="flex items-center justify-between p-3 rounded-xl bg-gray-900 border border-gray-800 cursor-pointer">
+                    <span class="text-sm font-medium text-gray-200"><i class="fa-solid fa-bolt text-yt-red mr-2"></i>Short Video Published</span>
+                    <input id="day-short-check" type="checkbox" class="w-4 h-4 accent-yt-red" />
+                  </label>
+
+                  <label class="flex items-center justify-between p-3 rounded-xl bg-gray-900 border border-gray-800 cursor-pointer">
+                    <span class="text-sm font-medium text-gray-200"><i class="fa-solid fa-video text-sky-400 mr-2"></i>Long Video Published</span>
+                    <input id="day-long-check" type="checkbox" class="w-4 h-4 accent-sky-400" />
+                  </label>
+
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <label class="block text-xs text-gray-400 mb-1">Subscribers Gained (+)</label>
+                      <input id="day-subs-input" type="number" min="0" value="0" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white" />
+                    </div>
+                    <div>
+                      <label class="block text-xs text-gray-400 mb-1">Watch Hours (+)</label>
+                      <input id="day-watch-input" type="number" min="0" step="0.5" value="0" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs text-gray-400 mb-1">Daily Progress Note</label>
+                    <textarea id="day-note-input" rows="2" placeholder="वीडियो टॉपिक या परफॉर्मेंस नोट..." class="w-full bg-gray-900 border border-gray-700 rounded-xl p-2.5 text-xs text-white"></textarea>
+                  </div>
+
+                  <button type="button" onclick="saveSelectedMissionDay()" class="w-full py-2.5 rounded-xl bg-yt-red hover:bg-yt-darkred text-white text-sm font-bold shadow-lg transition">
+                    Save Day Progress (LocalStorage)
+                  </button>
+                </div>
+              </div>
+
+              <div class="lg:col-span-8 saas-card rounded-2xl p-5">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                  <h4 class="text-base font-bold text-white">60-Day Action Matrix (Click any Day)</h4>
+                  <div class="flex items-center gap-3 text-xs text-gray-400">
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-xs bg-emerald-500"></span> Done</span>
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-xs bg-sky-500"></span> Long Video Day</span>
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-xs bg-gray-800 border border-gray-700"></span> Upcoming</span>
+                  </div>
+                </div>
+                <div id="mission-60-grid" class="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-10 gap-2"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ======================================================= -->
+          <!-- SECTION 8: CHANNEL MANAGER, OAUTH INFO & AUTO SEO DRAFT -->
+          <!-- ======================================================= -->
+          <section id="section-connect" class="section-view space-y-6">
+            <!-- Connected Channels Manager -->
+            <div class="saas-card rounded-2xl p-5 sm:p-6 space-y-5">
+              <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-gray-800">
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h3 class="text-lg sm:text-xl font-bold text-white">Local Channel Profiles & Google OAuth 2.0</h3>
+                    <span class="px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold uppercase">DEMO / LOCAL STORAGE</span>
+                  </div>
+                  <p class="text-xs sm:text-sm text-gray-400 mt-1">
+                    यहाँ जोड़े गए सभी चैनल आपके ब्राउज़र के <code>localStorage</code> में सुरक्षित हैं। वास्तविक YouTube से लाइव कनेक्शन के लिए Backend OAuth 2.0 आवश्यक है।
+                  </p>
+                </div>
+                <button type="button" onclick="openConnectChannelModal()" class="self-start lg:self-center px-4 py-2.5 rounded-xl bg-yt-red hover:bg-yt-darkred text-white text-xs sm:text-sm font-bold shadow-lg transition flex items-center gap-2">
+                  <i class="fa-solid fa-plus"></i> Add Channel Profile (Local)
+                </button>
+              </div>
+
+              <div id="connected-channels-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+
+              <div class="p-4 sm:p-5 rounded-2xl bg-gray-900/90 border border-sky-500/30 space-y-2.5">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                  <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-sky-400"></i>
+                    Google OAuth 2.0 & YouTube Data API v3 Status: Not Connected (Frontend Only)
+                  </h4>
+                  <span class="text-[11px] px-2.5 py-0.5 rounded bg-sky-500/15 text-sky-300 font-semibold">Zero Frontend API Keys</span>
+                </div>
+                <p class="text-xs text-gray-300 leading-relaxed">
+                  अभी कोई वास्तविक <code>Google OAuth Token</code> या <code>YouTube Data API v3</code> बैकएंड जुड़ा नहीं है। जब आप Backend पर Google Cloud OAuth 2.0 जोड़ेंगे, तो नीचे दिए गए Scopes का उपयोग करके लाइव चैनल डेटा फेच किया जा सकेगा:
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[11px] font-mono">
+                  <div class="p-2.5 rounded-xl bg-gray-950 border border-gray-800 text-emerald-300">youtube.readonly</div>
+                  <div class="p-2.5 rounded-xl bg-gray-950 border border-gray-800 text-sky-300">youtube.force-ssl</div>
+                  <div class="p-2.5 rounded-xl bg-gray-950 border border-gray-800 text-purple-300">yt-analytics.readonly</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Auto SEO Metadata Draft Editor (Honest Local Mode) -->
+            <div class="saas-card rounded-2xl p-5 sm:p-6">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-800">
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h3 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+                      <i class="fa-solid fa-cloud-arrow-up text-teal-400"></i>
+                      Auto SEO Metadata Editor (Local Draft & Payload Builder)
+                    </h3>
+                    <span class="px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold uppercase">LOCAL DRAFT ONLY</span>
+                  </div>
+                  <p class="text-xs sm:text-sm text-gray-400 mt-1">
+                    <strong>स्पष्ट सूचना:</strong> यह टूल आपके वीडियो का Title, Description और Tags आपके <strong>Local Workspace</strong> में सेव करता है और YouTube API Payload तैयार करता है। यह अभी सीधे लाइव YouTube पर अपडेट नहीं भेजता।
+                  </p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-5">
+                <div class="lg:col-span-2 space-y-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1.5">Select Local Video Draft</label>
+                    <select id="autoseo-video-select" onchange="loadVideoIntoAutoSeo()" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-yt-red"></select>
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-xs mb-1.5">
+                      <label class="font-semibold text-gray-300">Video Title</label>
+                      <span id="autoseo-title-count" class="text-gray-400">0 / 100</span>
+                    </div>
+                    <input id="autoseo-title-input" oninput="updateAutoSeoCounters()" type="text" maxlength="100" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-yt-red" />
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-xs mb-1.5">
+                      <label class="font-semibold text-gray-300">Video Description</label>
+                      <span id="autoseo-desc-count" class="text-gray-400">0 / 5000</span>
+                    </div>
+                    <textarea id="autoseo-desc-input" oninput="updateAutoSeoCounters()" rows="5" maxlength="5000" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:border-yt-red"></textarea>
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-xs mb-1.5">
+                      <label class="font-semibold text-gray-300">Video Tags (Comma separated)</label>
+                      <span id="autoseo-tags-count" class="text-gray-400">0 / 500 chars</span>
+                    </div>
+                    <textarea id="autoseo-tags-input" oninput="updateAutoSeoCounters()" rows="2" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-yt-red"></textarea>
+                  </div>
+
+                  <label class="flex items-start gap-3 p-3.5 rounded-xl bg-gray-900 border border-gray-700 cursor-pointer">
+                    <input id="autoseo-permission-check" type="checkbox" class="mt-1 w-4 h-4 accent-yt-red rounded" />
+                    <span class="text-xs text-gray-300 leading-relaxed">
+                      <strong>Local Draft Confirmation:</strong> मैं समझता हूँ कि यह मेटाडेटा अभी मेरे ब्राउज़र के <code>localStorage</code> में सेव होगा (लाइव YouTube पर नहीं, क्योंकि YouTube API अभी कनेक्टेड नहीं है)।
+                    </span>
+                  </label>
+
+                  <div class="flex flex-wrap items-center gap-3">
+                    <button type="button" onclick="executeAutoSeoUpdate()" class="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold shadow-lg transition flex items-center gap-2">
+                      <i class="fa-solid fa-floppy-disk"></i> Save SEO Draft Locally
+                    </button>
+                    <button type="button" onclick="navigateTo('seo-generator')" class="px-4 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold transition">
+                      Generate New SEO with AI
+                    </button>
+                  </div>
+                </div>
+
+                <div class="space-y-4">
+                  <div class="p-4 rounded-2xl bg-gray-900 border border-gray-800">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-xs font-bold text-sky-400">Ready-to-Use API Payload (Preview)</span>
+                      <button type="button" onclick="copyTextById('api-payload-preview')" class="text-xs text-gray-400 hover:text-white"><i class="fa-regular fa-copy"></i> Copy</button>
+                    </div>
+                    <pre id="api-payload-preview" class="text-[11px] text-emerald-300 bg-gray-950 p-3 rounded-xl overflow-x-auto max-h-60 font-mono"></pre>
+                  </div>
+
+                  <div class="p-4 rounded-2xl bg-gray-900 border border-gray-800">
+                    <h5 class="text-xs font-bold text-white mb-2">Local Draft Save Log</h5>
+                    <div id="seo-audit-log" class="space-y-2 text-xs text-gray-400 max-h-44 overflow-y-auto"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Quick Nav -->
+    <nav class="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-[#0C0F17]/95 backdrop-blur-md border-t border-gray-800 flex justify-around py-2 px-1">
+      <button type="button" onclick="navigateTo('dashboard')" data-mob-nav="dashboard" class="mob-nav-btn flex flex-col items-center text-yt-red text-[10px] font-semibold px-2 py-1">
+        <i class="fa-solid fa-chart-line text-base mb-0.5"></i><span>Home</span>
+      </button>
+      <button type="button" onclick="navigateTo('seo-generator')" data-mob-nav="seo-generator" class="mob-nav-btn flex flex-col items-center text-gray-400 text-[10px] font-medium px-2 py-1">
+        <i class="fa-solid fa-wand-magic-sparkles text-base mb-0.5"></i><span>AI SEO</span>
+      </button>
+      <button type="button" onclick="navigateTo('upload-time')" data-mob-nav="upload-time" class="mob-nav-btn flex flex-col items-center text-gray-400 text-[10px] font-medium px-2 py-1">
+        <i class="fa-solid fa-clock text-base mb-0.5"></i><span>IST Time</span>
+      </button>
+      <button type="button" onclick="navigateTo('thumbnail')" data-mob-nav="thumbnail" class="mob-nav-btn flex flex-col items-center text-gray-400 text-[10px] font-medium px-2 py-1">
+        <i class="fa-solid fa-image text-base mb-0.5"></i><span>Thumb</span>
+      </button>
+      <button type="button" onclick="navigateTo('mission')" data-mob-nav="mission" class="mob-nav-btn flex flex-col items-center text-gray-400 text-[10px] font-medium px-2 py-1">
+        <i class="fa-solid fa-calendar-check text-base mb-0.5"></i><span>60-Day</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL 1: LOCAL ACCOUNT SIGN IN (SIMULATED GOOGLE OAUTH)   -->
+  <!-- ========================================================= -->
+  <div id="google-auth-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="saas-card rounded-2xl max-w-md w-full p-6 space-y-5">
+      <div class="flex items-center justify-between">
+        <div>
+          <h4 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fa-brands fa-google text-yt-red"></i> Local Creator Sign-In (Simulated OAuth)
+          </h4>
+          <span class="text-[10px] text-amber-300 font-bold uppercase">Demo Authentication • Stored in Browser LocalStorage</span>
+        </div>
+        <button type="button" onclick="closeGoogleAuthModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <p class="text-xs text-gray-400 leading-relaxed">
+        यह वास्तविक Google OAuth सर्वर से कनेक्टेड नहीं है। यह आपके ब्राउज़र के <code>localStorage</code> में प्रत्येक यूजर के लिए अलग Local Workspace बनाता है।
+      </p>
+
+      <div id="saved-accounts-container" class="space-y-2"></div>
+
+      <form onsubmit="handleGoogleSignInSubmit(event)" class="space-y-3 pt-2 border-t border-gray-800">
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Creator Full Name *</label>
+          <input id="auth-name-input" type="text" placeholder="e.g. Ananya Sharma" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-yt-red" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Email Identifier *</label>
+          <input id="auth-email-input" type="email" placeholder="e.g. creator@gmail.com" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-yt-red" />
+        </div>
+        <button type="submit" class="w-full py-3 rounded-xl bg-yt-red hover:bg-yt-darkred text-white text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-user-check"></i> Open Local Workspace
+        </button>
+      </form>
+
+      <div class="pt-2 border-t border-gray-800 text-center">
+        <button type="button" onclick="loginWithSandboxDemo()" class="text-xs text-sky-400 hover:underline font-semibold">
+          <i class="fa-solid fa-flask mr-1"></i> Or Launch Pre-Loaded Sandbox Demo Account
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL 2: ADD CHANNEL PROFILE (LOCAL / OAUTH INFO)         -->
+  <!-- ========================================================= -->
+  <div id="connect-channel-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="saas-card rounded-2xl max-w-xl w-full p-6 space-y-4 my-auto">
+      <div class="flex items-center justify-between">
+        <h4 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-brands fa-youtube text-yt-red"></i> Add YouTube Channel (Local / Demo)
+        </h4>
+        <button type="button" onclick="closeConnectChannelModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 p-1 rounded-xl bg-gray-900 border border-gray-800">
+        <button type="button" id="tab-custom-ch" onclick="switchConnectModalTab('custom')" class="py-2 rounded-lg bg-yt-red text-white text-xs font-bold transition">
+          1. Local Channel Profile
+        </button>
+        <button type="button" id="tab-oauth-ch" onclick="switchConnectModalTab('oauth')" class="py-2 rounded-lg text-gray-400 hover:text-white text-xs font-bold transition">
+          2. Real Google OAuth Status
+        </button>
+      </div>
+
+      <form id="connect-custom-form" onsubmit="handleConnectChannelSubmit(event)" class="space-y-3">
+        <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-200">
+          <strong>LocalStorage Persistence:</strong> यह चैनल प्रोफ़ाइल आपके ब्राउज़र के <code>localStorage</code> में <strong>"LOCAL / DEMO PROFILE"</strong> के रूप में सेव होगी।
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Channel Name *</label>
+            <input id="ch-form-name" type="text" placeholder="e.g. NextGen Tech Hindi" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Channel Handle *</label>
+            <input id="ch-form-handle" type="text" placeholder="e.g. @nextgentech" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Channel Category / Niche *</label>
+            <select id="ch-form-category" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white">
+              <option value="tech">Tech & Tutorials</option>
+              <option value="finance">Finance & Trading</option>
+              <option value="gaming">Gaming & Esports</option>
+              <option value="entertainment">Entertainment & Stories</option>
+              <option value="education">Education & Study</option>
+              <option value="cooking">Cooking & Food</option>
+              <option value="vlogs">Lifestyle & Travel Vlogs</option>
+              <option value="fitness">Health & Fitness</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Primary Audience & Language *</label>
+            <select id="ch-form-language" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white">
+              <option value="hinglish">Hindi + English (India)</option>
+              <option value="hindi">Pure Hindi (India)</option>
+              <option value="english">Global English</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <div>
+            <label class="block text-[11px] font-semibold text-gray-300 mb-1">Subscribers *</label>
+            <input id="ch-form-subs" type="number" min="0" value="0" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-gray-300 mb-1">Total Views *</label>
+            <input id="ch-form-views" type="number" min="0" value="0" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-gray-300 mb-1">Watch Hours *</label>
+            <input id="ch-form-watch" type="number" min="0" step="0.5" value="0" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-gray-300 mb-1">Videos Count</label>
+            <input id="ch-form-videos" type="number" min="0" value="0" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeConnectChannelModal()" class="px-4 py-2 rounded-xl bg-gray-800 text-gray-300 text-xs font-semibold">Cancel</button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-yt-red hover:bg-yt-darkred text-white text-xs font-bold shadow-lg">
+            Save Channel Locally
+          </button>
+        </div>
+      </form>
+
+      <div id="connect-oauth-panel" class="hidden space-y-3 text-xs text-gray-300">
+        <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 leading-relaxed">
+          <strong>Backend Required:</strong> वास्तविक Google OAuth 2.0 लॉगिन के लिए एक सुरक्षित Backend Server (Node.js / Python) और Google Cloud Console OAuth Credentials आवश्यक हैं। इस Frontend में कोई API Secret नहीं है।
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-300 mb-1">Google OAuth Client ID (Test Field)</label>
+          <input id="oauth-client-id-input" type="text" placeholder="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-xs text-white font-mono" />
+        </div>
+        <button type="button" onclick="triggerRealOAuthNotice()" class="w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold transition">
+          Check OAuth Backend Readiness
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL 3: UPDATE ACTIVE CHANNEL METRICS                    -->
+  <!-- ========================================================= -->
+  <div id="edit-stats-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="saas-card rounded-2xl max-w-md w-full p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <h4 class="text-lg font-bold text-white">Update Local Channel Metrics</h4>
+        <button type="button" onclick="closeEditChannelStatsModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Channel Name</label>
+          <input id="edit-ch-name" type="text" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3.5 py-2 text-sm text-white" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Category / Niche</label>
+          <select id="edit-ch-category" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3.5 py-2 text-sm text-white">
+            <option value="tech">Tech & Tutorials</option>
+            <option value="finance">Finance & Trading</option>
+            <option value="gaming">Gaming & Esports</option>
+            <option value="entertainment">Entertainment & Stories</option>
+            <option value="education">Education & Study</option>
+            <option value="cooking">Cooking & Food</option>
+            <option value="vlogs">Lifestyle & Travel Vlogs</option>
+            <option value="fitness">Health & Fitness</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-3 gap-2.5">
+          <div>
+            <label class="block text-[11px] font-semibold text-gray-300 mb-1">Subscribers</label>
+            <input id="edit-ch-subs" type="number" min="0" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-gray-300 mb-1">Total Views</label>
+            <input id="edit-ch-views" type="number" min="0" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-gray-300 mb-1">Watch Hours</label>
+            <input id="edit-ch-watch" type="number" min="0" step="0.5" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button type="button" onclick="closeEditChannelStatsModal()" class="px-4 py-2 rounded-xl bg-gray-800 text-gray-300 text-xs font-semibold">Cancel</button>
+        <button type="button" onclick="saveEditedChannelStats()" class="px-4 py-2 rounded-xl bg-yt-red hover:bg-yt-darkred text-white text-xs font-bold">Save Locally</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- JAVASCRIPT SAAS ENGINE (AUDITED & ERROR-FREE)             -->
+  <!-- ========================================================= -->
+  <script>
+    // ==========================================
+    // 1. MULTI-USER TENANT STORAGE ARCHITECTURE
+    // ==========================================
+    const SAAS_USERS_KEY = 'ytgb_saas_accounts_v3';
+    const SAAS_SESSION_KEY = 'ytgb_saas_active_session_v3';
+
+    let currentSessionUser = null;
+    let tenantWorkspace = null;
+    let growthChartInstance = null;
+    let istChartInstance = null;
+    let lastGeneratedSeo = null;
+    let uploadedThumbImage = null;
+
+    const CATEGORY_META = {
+      tech: {
+        label: 'Tech & Tutorials',
+        audience: 'Gadget buyers, smartphone users & digital learners',
+        bestShortIST: '7:00 PM – 8:30 PM IST',
+        bestLongIST: '6:30 PM – 8:30 PM IST',
+        bestDays: 'Sunday, Wednesday & Saturday',
+        shortReason: 'Tech और Tutorial दर्शकों का सबसे अधिक ट्रैफिक शाम 7:00–8:30 PM IST (ऑफिस/कॉलेज के बाद) होता है।',
+        longReason: 'Step-by-step Tech गाइड्स के लिए शाम 6:30 PM IST पर Public करना सबसे ज्यादा Average View Duration देता है।',
+        titleFormula: 'Problem + Clear Solution + Year (e.g. "[Tool/Setting] Kaise Use Kare 2026 | Full Guide")',
+        thumbStyle: 'Clean Dark Tech Backdrop + Bold 3-Word Contrasting Text + Highlighted UI Arrow',
+        seoFocus: 'High-intent Search Queries ("kaise kare", "best settings 2026", "review in hindi") + Chapters',
+        sampleTopic: 'Top 5 Hidden Smartphone Settings That Boost Speed & Battery in 2026'
+      },
+      finance: {
+        label: 'Finance & Trading',
+        audience: 'Retail investors, traders & personal finance learners',
+        bestShortIST: '4:30 PM – 6:30 PM IST',
+        bestLongIST: '8:00 PM – 9:30 PM IST',
+        bestDays: 'Sunday, Thursday & Friday',
+        shortReason: 'भारतीय बाजार बंद होने के तुरंत बाद 4:30–6:30 PM IST के बीच Finance Shorts पर उच्च CTR मिलता है।',
+        longReason: 'रात 8:00–9:30 PM IST के बीच दर्शक ध्यान से Investment और Risk Management के Long Videos देखते हैं।',
+        titleFormula: 'Number + Capital Protection / ROI Hook (e.g. "5 Risk Management Rules Every Beginner Must Know")',
+        thumbStyle: 'Deep Charcoal/Emerald + Clean Chart Visual + Bold Rupee/Percentage Figure',
+        seoFocus: 'High-CPC Finance Keywords ("risk management", "sip strategy", "personal finance")',
+        sampleTopic: 'Position Sizing & Risk Management Formula for Beginners'
+      },
+      gaming: {
+        label: 'Gaming & Esports',
+        audience: 'Mobile & PC gamers, live-stream viewers & esports fans',
+        bestShortIST: '5:00 PM – 7:00 PM IST',
+        bestLongIST: '8:30 PM – 10:30 PM IST',
+        bestDays: 'Friday, Saturday & Sunday',
+        shortReason: 'शाम 5:00–7:00 PM IST (स्कूल/कॉलेज के बाद) में Gaming Clutch व Funny Moments Shorts तेजी से वायरल होते हैं।',
+        longReason: 'रात 8:30–10:30 PM IST में Full Gameplay, Challenges और Live Streams को पीक व्यूअरशिप मिलती है।',
+        titleFormula: 'Impossible Challenge + Emotional Reaction (e.g. "1v4 Clutch With 1 HP — Unbelievable Ending!")',
+        thumbStyle: 'Vibrant Neon Rim Light + High-Action Game Frame + 2-Word Shock Reaction',
+        seoFocus: 'Trending Game Patch Names, Pro Sensitivity Settings & Montage Tags',
+        sampleTopic: 'Pro Sensitivity & 4-Finger Claw Setup Guide for Zero Recoil'
+      },
+      entertainment: {
+        label: 'Entertainment & Stories',
+        audience: 'General mobile viewers, storytelling & short-form audience',
+        bestShortIST: '8:00 PM – 10:00 PM IST',
+        bestLongIST: '7:30 PM – 9:30 PM IST',
+        bestDays: 'Friday, Saturday & Sunday',
+        shortReason: 'रात 8:00–10:00 PM IST (Prime Relax Time) में Storytelling और Facts Shorts को सबसे ज्यादा Rewatch मिलता है।',
+        longReason: 'वीकेंड शाम 7:30 PM IST पर Long Podcasts व Stories को उच्च Browse Feature इम्प्रेशन मिलते हैं।',
+        titleFormula: 'Curiosity Gap + Emotional Hook (e.g. "3 Psychology Facts That Will Change How You Think")',
+        thumbStyle: 'Expressive Close-Up + High-Contrast Red/Yellow Glow + Max 3 Curiosity Words',
+        seoFocus: 'Browse-Feed Curiosity Hooks, Storytelling Keywords & Emotional Tags',
+        sampleTopic: '3 Fascinating Human Psychology Secrets You Never Noticed'
+      },
+      education: {
+        label: 'Education & Study',
+        audience: 'Students, competitive exam aspirants & skill learners',
+        bestShortIST: '6:00 PM – 7:30 PM IST',
+        bestLongIST: '7:00 PM – 8:30 PM IST',
+        bestDays: 'Sunday, Tuesday & Thursday',
+        shortReason: 'शाम 6:00–7:30 PM IST के अध्ययन ब्रेक में Quick Formulas व Exam Tricks Shorts सबसे ज्यादा देखे जाते हैं।',
+        longReason: 'शाम 7:00 PM IST पर Complete Chapter/Revision वीडियो डालने से रात की पढ़ाई में उच्च Watch Time मिलता है।',
+        titleFormula: 'Exam/Skill Goal + Timeframe + Free Value (e.g. "Complete Revision Strategy in 30 Days")',
+        thumbStyle: 'Clean Navy/Gold + Structured Bullet Visual + Bold Crisp Typography',
+        seoFocus: 'Syllabus Keywords, Study Timetable Queries & Free Resource Tags',
+        sampleTopic: 'Scientific Memory Retention & Smart Revision Timetable for Exams'
+      },
+      cooking: {
+        label: 'Cooking & Food',
+        audience: 'Home cooks, food lovers & quick-recipe seekers',
+        bestShortIST: '11:30 AM – 1:00 PM IST',
+        bestLongIST: '5:00 PM – 6:30 PM IST',
+        bestDays: 'Saturday, Sunday & Wednesday',
+        shortReason: 'दोपहर के भोजन से पहले (11:30 AM–1:00 PM IST) और शाम की चाय के समय 60-Second Recipes सबसे ज्यादा सर्च होती हैं।',
+        longReason: 'शाम 5:00–6:30 PM IST (डिनर की तैयारी से पहले) Detailed Step-by-Step Recipes पर सबसे ज्यादा क्लिक आते हैं।',
+        titleFormula: 'Dish Name + Time/Secret Ingredient (e.g. "10-Minute Crispy Street Style Snack Recipe")',
+        thumbStyle: 'Bright Mouth-Watering Close-Up Dish Photo + Warm Lighting + 3-Word Taste Hook',
+        seoFocus: 'Ingredient-Based Search Keywords ("ghar par kaise banaye", "easy recipe")',
+        sampleTopic: 'Restaurant Style Paneer Recipe in 15 Minutes Without Cream'
+      },
+      vlogs: {
+        label: 'Lifestyle & Travel Vlogs',
+        audience: 'Daily vlog followers, travel enthusiasts & community fans',
+        bestShortIST: '7:30 PM – 9:00 PM IST',
+        bestLongIST: '6:00 PM – 8:00 PM IST',
+        bestDays: 'Sunday, Friday & Saturday',
+        shortReason: 'शाम 7:30–9:00 PM IST में Mini Travel Clips व Behind-the-Scenes Shorts पर सबसे अधिक कमेंट्स आते हैं।',
+        longReason: 'शाम 6:00–8:00 PM IST में परिवार और युवा दर्शक आराम से Daily/Travel Vlogs देखते हैं।',
+        titleFormula: 'Story Event + Location/Emotion (e.g. "First Solo Sunrise Trek — Unexpected Twist!")',
+        thumbStyle: 'Natural Scenic Wide Shot + Authentic Human Expression + Clean Story Text',
+        seoFocus: 'Location Tags, Travel Itinerary Keywords & Relatable Lifestyle Hooks',
+        sampleTopic: '24 Hours Budget Travel Guide & Hidden Places Vlog'
+      },
+      fitness: {
+        label: 'Health & Fitness',
+        audience: 'Home workout beginners, nutrition & wellness learners',
+        bestShortIST: '6:30 AM – 8:00 AM IST',
+        bestLongIST: '6:00 PM – 7:30 PM IST',
+        bestDays: 'Monday, Wednesday & Saturday',
+        shortReason: 'सुबह 6:30–8:00 AM IST (Morning Workout Window) में Quick Exercise Form Shorts पर उच्च सेव-रेट मिलता है।',
+        longReason: 'शाम 6:00–7:30 PM IST में Full Diet Plan व Home Workout Routines सबसे ज्यादा देखे जाते हैं।',
+        titleFormula: 'Target Result + No-Equipment/Simple Diet (e.g. "15-Min Daily Home Workout for Beginners")',
+        thumbStyle: 'High-Contrast Gym/Home Action Pose + Clear Timer/Result Badge',
+        seoFocus: 'Beginner Workout Queries, Indian Diet Plan Keywords & Posture Correction Tags',
+        sampleTopic: '20-Minute Beginner Home Workout Without Equipment + Diet Tips'
+      }
+    };
+
+    function getTenantStorageKey(userId) {
+      return `ytgb_saas_tenant_${userId}`;
+    }
+
+    function getSavedAccounts() {
+      try {
+        return JSON.parse(localStorage.getItem(SAAS_USERS_KEY) || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveAccountsList(list) {
+      try {
+        localStorage.setItem(SAAS_USERS_KEY, JSON.stringify(list));
+      } catch (e) {}
+    }
+
+    function loadTenantWorkspace(userId) {
+      try {
+        const raw = localStorage.getItem(getTenantStorageKey(userId));
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.channels)) return parsed;
+        }
+      } catch (e) {}
+      return { activeChannelId: null, channels: [] };
+    }
+
+    function saveTenantWorkspace() {
+      if (!currentSessionUser || !tenantWorkspace) return;
+      try {
+        localStorage.setItem(getTenantStorageKey(currentSessionUser.id), JSON.stringify(tenantWorkspace));
+      } catch (e) {
+        showToast('Browser localStorage limit reached.', 'warning');
+      }
+    }
+
+    function getActiveChannel() {
+      if (!tenantWorkspace || !Array.isArray(tenantWorkspace.channels) || !tenantWorkspace.channels.length) return null;
+      return tenantWorkspace.channels.find(c => c.id === tenantWorkspace.activeChannelId) || tenantWorkspace.channels[0];
+    }
+
+    // ==========================================
+    // 2. AUTHENTICATION & SANDBOX DEMO LOGIN
+    // ==========================================
+    function openGoogleAuthModal() {
+      const accounts = getSavedAccounts();
+      const box = document.getElementById('saved-accounts-container');
+      if (accounts.length) {
+        box.innerHTML = `<p class="text-[11px] font-bold text-gray-400 uppercase">Saved Local Accounts on This Browser</p>` +
+          accounts.map(acc => `
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-gray-900 border border-gray-800">
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-white truncate">${escapeHtml(acc.name)}</p>
+                <p class="text-[11px] text-gray-400 truncate">${escapeHtml(acc.email)}</p>
+              </div>
+              <button type="button" onclick="loginExistingAccount('${escapeBacktick(acc.id)}')" class="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition">
+                Open Local
+              </button>
+            </div>
+          `).join('');
+      } else {
+        box.innerHTML = '';
+      }
+
+      const modal = document.getElementById('google-auth-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeGoogleAuthModal() {
+      const modal = document.getElementById('google-auth-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function handleGoogleSignInSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('auth-name-input').value.trim();
+      const email = document.getElementById('auth-email-input').value.trim().toLowerCase();
+      if (!name || !email) return;
+
+      const userId = 'usr_' + email.replace(/[^a-z0-9]/g, '_');
+      const accounts = getSavedAccounts();
+      if (!accounts.some(a => a.id === userId)) {
+        accounts.push({ id: userId, name, email, isDemo: true });
+        saveAccountsList(accounts);
+      }
+
+      document.getElementById('auth-name-input').value = '';
+      document.getElementById('auth-email-input').value = '';
+      closeGoogleAuthModal();
+      activateUserSession({ id: userId, name, email, isDemo: true });
+      showToast('Local workspace opened (Stored in browser localStorage).', 'info');
+    }
+
+    function loginExistingAccount(userId) {
+      const acc = getSavedAccounts().find(a => a.id === userId);
+      if (!acc) return;
+      closeGoogleAuthModal();
+      activateUserSession(acc);
+      showToast(`Loaded local profile for ${acc.name}.`, 'info');
+    }
+
+    function loginWithSandboxDemo() {
+      closeGoogleAuthModal();
+      const demoUser = {
+        id: 'usr_sandbox_demo_creator',
+        name: 'Sandbox Demo Creator',
+        email: 'sandbox.demo@local.app',
+        isDemo: true
+      };
+      const existing = loadTenantWorkspace(demoUser.id);
+      if (!existing.channels.length) {
+        const seededDemo = {
+          activeChannelId: 'ch_demo_tech',
+          channels: [
+            {
+              id: 'ch_demo_tech',
+              name: 'Demo Tech Studio',
+              handle: '@demotechstudio',
+              category: 'tech',
+              language: 'hinglish',
+              connectionMode: 'SANDBOX_DEMO',
+              subscribers: 340,
+              views: 14200,
+              watchHours: 420.5,
+              tasks: [
+                { id: 1, text: 'Publish 1 Tutorial Short at 7:30 PM IST (Local Task)', done: true },
+                { id: 2, text: 'Draft SEO Title & Description in AI SEO Studio', done: false }
+              ],
+              videos: [
+                {
+                  id: 'dv_1',
+                  title: '5 Smart Productivity Apps for Creators 2026 | Full Demo',
+                  type: 'Long',
+                  publishDay: 'Sunday',
+                  publishTimeIST: '07:00 PM IST',
+                  views: 5400,
+                  ctr: '7.8%',
+                  description: 'Complete walkthrough of 5 free productivity apps for creators.',
+                  tags: 'productivity apps, creator tools, tech tutorial'
+                },
+                {
+                  id: 'dv_2',
+                  title: '1-Click Audio Cleanup Trick #shorts',
+                  type: 'Short',
+                  publishDay: 'Wednesday',
+                  publishTimeIST: '07:30 PM IST',
+                  views: 8800,
+                  ctr: '9.4%',
+                  description: 'Clean background noise in seconds. #shorts',
+                  tags: 'audio cleanup, shorts, creator tips'
+                }
+              ],
+              missionDays: { 1: { short: true, long: false, subs: 9, watch: 4.5, note: 'Sandbox sample day log' } },
+              selectedMissionDay: 1,
+              savedThumbnails: [],
+              auditLog: []
+            },
+            {
+              id: 'ch_demo_cooking',
+              name: 'Demo Quick Kitchen',
+              handle: '@demoquickkitchen',
+              category: 'cooking',
+              language: 'hindi',
+              connectionMode: 'SANDBOX_DEMO',
+              subscribers: 2450,
+              views: 118500,
+              watchHours: 3180.0,
+              tasks: [
+                { id: 1, text: 'Upload 60-Sec Lunch Recipe Short at 12:00 PM IST (Local Task)', done: true },
+                { id: 2, text: 'Prepare Weekend Dinner Recipe Video', done: false }
+              ],
+              videos: [
+                {
+                  id: 'dv_c1',
+                  title: '10-Minute Crispy Street Style Snack Recipe in Hindi',
+                  type: 'Long',
+                  publishDay: 'Saturday',
+                  publishTimeIST: '05:30 PM IST',
+                  views: 42100,
+                  ctr: '8.9%',
+                  description: 'Easy evening snack recipe made at home in 10 minutes.',
+                  tags: 'easy snack recipe, hindi cooking, quick snacks'
+                }
+              ],
+              missionDays: {},
+              selectedMissionDay: 1,
+              savedThumbnails: [],
+              auditLog: []
+            }
+          ]
+        };
+        try {
+          localStorage.setItem(getTenantStorageKey(demoUser.id), JSON.stringify(seededDemo));
+        } catch (e) {}
+      }
+      activateUserSession(demoUser);
+      showToast('Sandbox Demo Workspace opened (Simulated & LocalStorage Data).', 'info');
+    }
+
+    function activateUserSession(userObj) {
+      currentSessionUser = userObj;
+      try {
+        localStorage.setItem(SAAS_SESSION_KEY, JSON.stringify(userObj));
+      } catch (e) {}
+      tenantWorkspace = loadTenantWorkspace(userObj.id);
+
+      document.getElementById('unauth-welcome-screen').classList.add('hidden');
+      const appEl = document.getElementById('auth-saas-app');
+      appEl.classList.remove('hidden');
+      appEl.classList.add('flex');
+
+      refreshEntireWorkspace();
+    }
+
+    function signOutCurrentUser() {
+      currentSessionUser = null;
+      tenantWorkspace = null;
+      try {
+        localStorage.removeItem(SAAS_SESSION_KEY);
+      } catch (e) {}
+
+      const appEl = document.getElementById('auth-saas-app');
+      appEl.classList.add('hidden');
+      appEl.classList.remove('flex');
+      document.getElementById('unauth-welcome-screen').classList.remove('hidden');
+      showToast('Signed out. Local workspace data remains saved in browser localStorage.', 'info');
+    }
+
+    // ==========================================
+    // 3. CONNECT CHANNEL & MULTI-CHANNEL SWITCHER
+    // ==========================================
+    function openConnectChannelModal() {
+      switchConnectModalTab('custom');
+      const modal = document.getElementById('connect-channel-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeConnectChannelModal() {
+      const modal = document.getElementById('connect-channel-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function switchConnectModalTab(tab) {
+      const customForm = document.getElementById('connect-custom-form');
+      const oauthPanel = document.getElementById('connect-oauth-panel');
+      const btnCustom = document.getElementById('tab-custom-ch');
+      const btnOauth = document.getElementById('tab-oauth-ch');
+
+      if (tab === 'custom') {
+        customForm.classList.remove('hidden');
+        oauthPanel.classList.add('hidden');
+        btnCustom.className = 'py-2 rounded-lg bg-yt-red text-white text-xs font-bold transition';
+        btnOauth.className = 'py-2 rounded-lg text-gray-400 hover:text-white text-xs font-bold transition';
+      } else {
+        customForm.classList.add('hidden');
+        oauthPanel.classList.remove('hidden');
+        btnOauth.className = 'py-2 rounded-lg bg-sky-600 text-white text-xs font-bold transition';
+        btnCustom.className = 'py-2 rounded-lg text-gray-400 hover:text-white text-xs font-bold transition';
+      }
+    }
+
+    function triggerRealOAuthNotice() {
+      const clientId = document.getElementById('oauth-client-id-input').value.trim();
+      if (!clientId) {
+        showToast('Please enter a Google OAuth 2.0 Client ID to check readiness.', 'warning');
+        return;
+      }
+      showToast('Notice: Real Google OAuth requires a Backend Server. Frontend-only mode uses LocalStorage.', 'info');
+    }
+
+    function handleConnectChannelSubmit(e) {
+      e.preventDefault();
+      if (!tenantWorkspace) return;
+      const name = document.getElementById('ch-form-name').value.trim();
+      let handle = document.getElementById('ch-form-handle').value.trim();
+      if (!handle.startsWith('@')) handle = '@' + handle.replace(/[^a-zA-Z0-9_]/g, '');
+      const category = document.getElementById('ch-form-category').value;
+      const language = document.getElementById('ch-form-language').value;
+      const subscribers = Math.max(0, parseInt(document.getElementById('ch-form-subs').value || '0', 10));
+      const views = Math.max(0, parseInt(document.getElementById('ch-form-views').value || '0', 10));
+      const watchHours = Math.max(0, parseFloat(document.getElementById('ch-form-watch').value || '0'));
+      const vidCount = Math.max(0, parseInt(document.getElementById('ch-form-videos').value || '0', 10));
+
+      const catInfo = CATEGORY_META[category] || CATEGORY_META.tech;
+      const initialVideos = [];
+      if (vidCount > 0) {
+        initialVideos.push({
+          id: 'vid_' + Date.now(),
+          title: `${name} — Sample ${catInfo.label} Video (Local)`,
+          type: 'Long',
+          publishDay: 'Sunday',
+          publishTimeIST: catInfo.bestLongIST.split('–')[0].trim() + ' IST',
+          views: Math.round(views / Math.max(1, vidCount)),
+          ctr: '6.8%',
+          description: `Local video draft for ${name} (${catInfo.label}).`,
+          tags: `${name}, ${category}, youtube`
+        });
+      }
+
+      const newChannelId = 'ch_' + Date.now();
+      tenantWorkspace.channels.push({
+        id: newChannelId,
+        name,
+        handle,
+        category,
+        language,
+        connectionMode: 'LOCAL_PROFILE',
+        subscribers,
+        views,
+        watchHours,
+        tasks: [
+          { id: 1, text: `Publish 1 High-Retention Short at ${catInfo.bestShortIST}`, done: false },
+          { id: 2, text: `Generate Category-Specific Script & SEO for ${name}`, done: false }
+        ],
+        videos: initialVideos,
+        missionDays: {},
+        selectedMissionDay: 1,
+        savedThumbnails: [],
+        auditLog: []
+      });
+
+      tenantWorkspace.activeChannelId = newChannelId;
+      saveTenantWorkspace();
+
+      document.getElementById('ch-form-name').value = '';
+      document.getElementById('ch-form-handle').value = '';
+      closeConnectChannelModal();
+      refreshEntireWorkspace();
+      showToast(`Channel "${name}" saved to local browser storage!`, 'info');
+    }
+
+    function switchActiveChannel(channelId) {
+      if (!tenantWorkspace) return;
+      tenantWorkspace.activeChannelId = channelId;
+      saveTenantWorkspace();
+      refreshEntireWorkspace();
+      const ch = getActiveChannel();
+      if (ch) showToast(`Switched to local profile "${ch.name}" (${ch.subscribers.toLocaleString()} Subs)`, 'info');
+    }
+
+    // ==========================================
+    // 4. DYNAMIC MONETISATION & MILESTONE ENGINE
+    // ==========================================
+    function computeDynamicMilestones(ch) {
+      const subs = ch.subscribers;
+      const watch = ch.watchHours;
+
+      let nextSubGoal = 500;
+      let subTierLabel = 'YPP Tier 1 Fan-Funding Milestone (500 Subs)';
+      if (subs >= 500 && subs < 1000) {
+        nextSubGoal = 1000;
+        subTierLabel = 'Full YouTube Partner Program Milestone (1,000 Subs)';
+      } else if (subs >= 1000 && subs < 10000) {
+        nextSubGoal = 10000;
+        subTierLabel = 'Creator Growth Milestone (10,000 Subscribers)';
+      } else if (subs >= 10000 && subs < 100000) {
+        nextSubGoal = 100000;
+        subTierLabel = 'Silver Play Button Milestone (100,000 Subscribers)';
+      } else if (subs >= 100000) {
+        nextSubGoal = 1000000;
+        subTierLabel = 'Gold Play Button Milestone (1,000,000 Subscribers)';
+      }
+
+      const subPct = Math.min(100, (subs / nextSubGoal) * 100);
+      const subRemaining = Math.max(0, nextSubGoal - subs);
+
+      let nextWatchGoal = watch < 3000 ? 3000 : 4000;
+      let watchTierLabel = watch < 3000
+        ? 'YPP Tier 1 Watch Hours (3,000 hrs)'
+        : 'Full AdSense YPP Watch Hours (4,000 hrs)';
+      if (watch >= 4000) {
+        nextWatchGoal = 10000;
+        watchTierLabel = 'Established Channel Watch Hours (10,000 hrs)';
+      }
+
+      const watchPct = Math.min(100, (watch / nextWatchGoal) * 100);
+      const watchRemaining = Math.max(0, nextWatchGoal - watch);
+
+      return {
+        nextSubGoal,
+        subTierLabel,
+        subPct,
+        subRemaining,
+        nextWatchGoal,
+        watchTierLabel,
+        watchPct,
+        watchRemaining
+      };
+    }
+
+    // ==========================================
+    // 5. GLOBAL WORKSPACE REFRESH & RENDERERS
+    // ==========================================
+    function refreshEntireWorkspace() {
+      if (!currentSessionUser) return;
+
+      document.getElementById('sidebar-user-email').textContent = currentSessionUser.email;
+      document.getElementById('header-user-display').textContent = currentSessionUser.name;
+      document.getElementById('onboard-user-name').textContent = currentSessionUser.name;
+
+      const ch = getActiveChannel();
+      const zeroScreen = document.getElementById('zero-channel-onboarding');
+      const activeSections = document.getElementById('active-channel-sections');
+      const sidebarChBox = document.getElementById('sidebar-channel-box');
+      const topbarChWrap = document.getElementById('topbar-channel-selector-wrap');
+
+      if (!ch) {
+        zeroScreen.classList.remove('hidden');
+        activeSections.classList.add('hidden');
+        document.getElementById('mobile-active-channel-label').textContent = 'No Channel Connected';
+        document.getElementById('header-data-mode-badge').textContent = 'LOCAL STORAGE (EMPTY)';
+
+        sidebarChBox.innerHTML = `
+          <button type="button" onclick="openConnectChannelModal()" class="w-full py-2 px-3 rounded-xl bg-yt-red hover:bg-yt-darkred text-white text-xs font-bold transition flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-plus"></i> Add Channel (Local)
+          </button>
+        `;
+        topbarChWrap.innerHTML = '';
+        return;
+      }
+
+      zeroScreen.classList.add('hidden');
+      activeSections.classList.remove('hidden');
+
+      const modeText = ch.connectionMode === 'SANDBOX_DEMO'
+        ? 'SIMULATED SANDBOX DATA (LOCAL)'
+        : 'LOCAL PROFILE (NO LIVE API)';
+      document.getElementById('header-data-mode-badge').textContent = modeText;
+      document.getElementById('mobile-active-channel-label').textContent = `${ch.name} • ${ch.subscribers.toLocaleString()} Subs (Local)`;
+
+      const optionsHtml = tenantWorkspace.channels.map(c =>
+        `<option value="${c.id}" ${c.id === ch.id ? 'selected' : ''}>${escapeHtml(c.name)} (${c.subscribers.toLocaleString()} Subs)</option>`
+      ).join('');
+
+      sidebarChBox.innerHTML = `
+        <div class="space-y-1.5">
+          <label class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Local Channels (${tenantWorkspace.channels.length})</label>
+          <select onchange="switchActiveChannel(this.value)" class="w-full bg-gray-950 border border-gray-700 rounded-xl px-2.5 py-1.5 text-xs font-bold text-white focus:outline-none focus:border-yt-red">
+            ${optionsHtml}
+          </select>
+        </div>
+      `;
+
+      topbarChWrap.innerHTML = `
+        <div class="flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-xl px-3 py-1.5">
+          <i class="fa-brands fa-youtube text-yt-red text-sm"></i>
+          <select onchange="switchActiveChannel(this.value)" aria-label="Switch Channel" class="bg-transparent text-xs font-bold text-white focus:outline-none pr-2">
+            ${optionsHtml}
+          </select>
+        </div>
+      `;
+
+      renderDashboard(ch);
+      renderPersonalizedStrategy(false);
+      renderUploadTimeAnalyzer();
+      renderMissionSection();
+      renderThumbnailStudio();
+      renderTrendsSection();
+      renderConnectedChannelsManager();
+      loadVideoIntoAutoSeo();
+      renderAuditLog();
+
+      const catInfo = CATEGORY_META[ch.category] || CATEGORY_META.tech;
+      document.getElementById('seo-channel-context-badge').textContent = `${ch.name} • ${catInfo.label} (Local)`;
+      document.getElementById('seo-lang-select').value = ch.language || 'hinglish';
+      if (!document.getElementById('seo-topic-input').value.trim()) {
+        document.getElementById('seo-topic-input').value = catInfo.sampleTopic;
+      }
+      generateFullSeoPack();
+    }
+
+    function renderDashboard(ch) {
+      const catInfo = CATEGORY_META[ch.category] || CATEGORY_META.tech;
+      const ms = computeDynamicMilestones(ch);
+
+      document.getElementById('dash-connection-badge').textContent = ch.connectionMode === 'SANDBOX_DEMO'
+        ? 'SIMULATED SANDBOX DATA (LOCALSTORAGE)'
+        : 'LOCAL CHANNEL PROFILE (NO LIVE API)';
+      document.getElementById('dash-category-pill').textContent = catInfo.label;
+      document.getElementById('dash-lang-pill').textContent = `Language: ${(ch.language || 'hinglish').toUpperCase()}`;
+      document.getElementById('dash-channel-name').textContent = ch.name;
+      document.getElementById('dash-channel-handle').textContent = ch.handle;
+
+      document.getElementById('dash-milestone-summary').textContent =
+        `वर्तमान ${ch.subscribers.toLocaleString()} Subscribers (Local) से अगले लक्ष्य (${ms.nextSubGoal.toLocaleString()} Subs) तक पहुँचने के लिए ${ms.subRemaining.toLocaleString()} Subscribers और आवश्यक हैं।`;
+
+      document.getElementById('dash-subs-milestone-label').textContent = ms.subTierLabel;
+      document.getElementById('dash-subs-milestone-pct').textContent = `${ms.subPct.toFixed(1)}% (${ch.subscribers.toLocaleString()} / ${ms.nextSubGoal.toLocaleString()})`;
+      document.getElementById('dash-subs-milestone-bar').style.width = `${ms.subPct}%`;
+      document.getElementById('dash-subs-milestone-hint').textContent = `${ms.subRemaining.toLocaleString()} subscribers remaining to unlock next milestone.`;
+
+      document.getElementById('dash-watch-milestone-label').textContent = ms.watchTierLabel;
+      document.getElementById('dash-watch-milestone-pct').textContent = `${ms.watchPct.toFixed(1)}% (${ch.watchHours.toLocaleString()} / ${ms.nextWatchGoal.toLocaleString()} hrs)`;
+      document.getElementById('dash-watch-milestone-bar').style.width = `${ms.watchPct}%`;
+      document.getElementById('dash-watch-milestone-hint').textContent = `${ms.watchRemaining.toLocaleString()} watch hours remaining for this YPP tier.`;
+
+      document.getElementById('kpi-subs').textContent = ch.subscribers.toLocaleString();
+      document.getElementById('kpi-subs-subtext').textContent = `Next Goal: ${ms.nextSubGoal.toLocaleString()} Subs`;
+      document.getElementById('kpi-views').textContent = ch.views.toLocaleString();
+      const avgViews = ch.videos.length ? Math.round(ch.views / ch.videos.length) : ch.views;
+      document.getElementById('kpi-views-subtext').textContent = `Avg Views/Video: ${avgViews.toLocaleString()}`;
+      document.getElementById('kpi-watch').textContent = ch.watchHours.toLocaleString();
+      document.getElementById('kpi-watch-subtext').textContent = `Target: ${ms.nextWatchGoal.toLocaleString()} hrs`;
+
+      document.getElementById('kpi-ist-window').textContent = catInfo.bestShortIST;
+      document.getElementById('kpi-ist-days').textContent = catInfo.bestDays;
+
+      renderDailyTasks(ch);
+      renderGrowthProjectionChart(ch, ms);
+    }
+
+    function renderDailyTasks(ch) {
+      const list = document.getElementById('daily-tasks-list');
+      list.innerHTML = '';
+      let doneCount = 0;
+
+      ch.tasks.forEach(task => {
+        if (task.done) doneCount++;
+        const row = document.createElement('div');
+        row.className = `flex items-center justify-between gap-2 p-3 rounded-xl border transition ${
+          task.done
+            ? 'bg-emerald-950/25 border-emerald-800/40 text-gray-400 line-through'
+            : 'bg-gray-900/90 border-gray-800 text-gray-200'
+        }`;
+        row.innerHTML = `
+          <label class="flex items-center gap-2.5 cursor-pointer flex-1 min-w-0">
+            <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleDailyTask(${task.id})" class="w-4 h-4 accent-emerald-500 rounded shrink-0" />
+            <span class="text-xs leading-snug truncate">${escapeHtml(task.text)}</span>
+          </label>
+          <button type="button" onclick="deleteDailyTask(${task.id})" class="text-gray-500 hover:text-red-400 text-xs px-1.5"><i class="fa-solid fa-trash-can"></i></button>
+        `;
+        list.appendChild(row);
+      });
+
+      document.getElementById('tasks-counter-badge').textContent = `${doneCount} / ${ch.tasks.length}`;
+    }
+
+    function toggleDailyTask(id) {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const t = ch.tasks.find(x => x.id === id);
+      if (t) {
+        t.done = !t.done;
+        saveTenantWorkspace();
+        renderDailyTasks(ch);
+      }
+    }
+
+    function addCustomDailyTask(e) {
+      e.preventDefault();
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const input = document.getElementById('new-task-input');
+      const text = input.value.trim();
+      if (!text) return;
+      ch.tasks.push({ id: Date.now(), text, done: false });
+      input.value = '';
+      saveTenantWorkspace();
+      renderDailyTasks(ch);
+      showToast('Task saved to localStorage!', 'info');
+    }
+
+    function deleteDailyTask(id) {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      ch.tasks = ch.tasks.filter(t => t.id !== id);
+      saveTenantWorkspace();
+      renderDailyTasks(ch);
+    }
+
+    function renderGrowthProjectionChart(ch, ms) {
+      const ctx = document.getElementById('dashboardGrowthChart');
+      if (!ctx) return;
+      if (growthChartInstance) growthChartInstance.destroy();
+
+      const startSubs = ch.subscribers;
+      const targetSubs = ms.nextSubGoal;
+      const span = Math.max(50, targetSubs - startSubs);
+      const dataPoints = [
+        startSubs,
+        Math.round(startSubs + span * 0.14),
+        Math.round(startSubs + span * 0.30),
+        Math.round(startSubs + span * 0.48),
+        Math.round(startSubs + span * 0.68),
+        Math.round(startSubs + span * 0.85),
+        targetSubs
+      ];
+
+      growthChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Today', 'Day 10', 'Day 20', 'Day 30', 'Day 40', 'Day 50', 'Day 60'],
+          datasets: [{
+            label: `${ch.name} Estimated Subscribers (Simulated Projection)`,
+            data: dataPoints,
+            borderColor: '#FF0033',
+            backgroundColor: 'rgba(255, 0, 51, 0.15)',
+            borderWidth: 3,
+            pointBackgroundColor: '#34D399',
+            pointRadius: 5,
+            fill: true,
+            tension: 0.35
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#D1D5DB', font: { size: 12 } } }
+          },
+          scales: {
+            x: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(55,65,81,0.25)' } },
+            y: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(55,65,81,0.25)' } }
+          }
+        }
+      });
+    }
+
+    // ==========================================
+    // 6. CATEGORY-AWARE SCRIPT & SEO STUDIO
+    // ==========================================
+    function suggestTopicForActiveChannel() {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const catInfo = CATEGORY_META[ch.category] || CATEGORY_META.tech;
+      const variations = [
+        catInfo.sampleTopic,
+        `Beginners Mistakes in ${catInfo.label} (2026 Complete Guide)`,
+        `How to Grow Fast in ${catInfo.label} — Step by Step Blueprint`
+      ];
+      const chosen = variations[Math.floor(Math.random() * variations.length)];
+      document.getElementById('seo-topic-input').value = chosen;
+      generateFullSeoPack();
+    }
+
+    function generateFullSeoPack() {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const catInfo = CATEGORY_META[ch.category] || CATEGORY_META.tech;
+      const rawTopic = document.getElementById('seo-topic-input').value.trim() || catInfo.sampleTopic;
+      const lang = document.getElementById('seo-lang-select').value;
+      const format = document.getElementById('seo-format-select').value;
+      const cleanTopic = rawTopic.replace(/\s+/g, ' ').slice(0, 75);
+
+      let scriptText = '';
+      if (format === 'short') {
+        scriptText = `[0:00 - 0:04 | SCROLL-STOPPING HOOK]
+"${cleanTopic}" — अगर आप ${catInfo.label} में यह एक बदलाव कर लें, तो आज से ही रिजल्ट बदल जाएंगे!
+
+[0:05 - 0:25 | CORE VALUE & PROOF]
+ज्यादातर लोग शुरुआत में सबसे बेसिक स्टेप छोड़ देते हैं। सबसे पहले यह सेटिंग/नियम अपनाएं जो ${catInfo.audience} के लिए सबसे ज्यादा काम करता है।
+
+[0:26 - 0:45 | ACTIONABLE STEP]
+Step 1: सही समय (${catInfo.bestShortIST}) पर फोकस करें।
+Step 2: पहले 3 सेकंड में मुख्य समस्या दिखाएं।
+
+[0:46 - 0:55 | LOOP & CTA]
+ऐसी ही प्रैक्टिकल ${catInfo.label} टिप्स के लिए "${ch.name}" को अभी Subscribe करें!`;
+      } else {
+        scriptText = `=== COMPLETE VIDEO SCRIPT: ${cleanTopic.toUpperCase()} ===
+Channel: ${ch.name} (${catInfo.label}) | Target Audience: ${catInfo.audience}
+
+[00:00 - 00:45 | HIGH-RETENTION HOOK]
+"नमस्कार दोस्तों! स्वागत है आपका ${ch.name} पर। आज हम बात करने वाले हैं '${cleanTopic}' के बारे में — और इस वीडियो के अंत तक आपके पास एक ऐसा प्रैक्टिकल एक्शन प्लान होगा जिसे आप आज ही लागू कर सकते हैं।"
+
+[00:45 - 03:30 | CHAPTER 1: THE CORE PROBLEM & MISTAKES]
+• ${catInfo.label} में 90% नए लोग क्या गलती करते हैं?
+• सही डेटा और प्रैक्टिकल उदाहरण से समझें।
+
+[03:30 - 07:00 | CHAPTER 2: STEP-BY-STEP SOLUTION BLUEPRINT]
+• Step 1: Foundation और सही टूल्स/स्ट्रैटेजी का चुनाव।
+• Step 2: Execution और Consistency बनाए रखने का तरीका।
+• Step 3: Pro Optimization टिप जो आपकी ग्रोथ को 2X करेगी।
+
+[07:00 - 08:30 | SUMMARY & SUBSCRIBER CTA]
+"अगर आपको यह गाइड उपयोगी लगी हो तो वीडियो को Like करें और '${ch.name}' को Subscribe करके बेल आइकन दबाएं!"`;
+      }
+
+      const titles = lang === 'english'
+        ? [
+            `${cleanTopic} — Complete Step-by-Step Guide (2026)`,
+            `How to Master ${cleanTopic} Fast (${catInfo.label})`,
+            `7 Mistakes Beginners Make in ${cleanTopic}`,
+            `${cleanTopic}: Proven Blueprint for Real Results`,
+            `The Ultimate ${cleanTopic} Tutorial for ${catInfo.audience.split(',')[0]}`,
+            `Stop Doing This! Better Strategy for ${cleanTopic}`,
+            `${cleanTopic} Explained Clearly in 2026`,
+            `Why ${cleanTopic} Matters More Than Ever Right Now`,
+            `From Beginner to Pro: ${cleanTopic} Full Walkthrough`,
+            `${cleanTopic} — Essential Rules & Practical Tips`
+          ]
+        : [
+            `${cleanTopic} | Step by Step Complete Guide (2026)`,
+            `${catInfo.label} Secret: ${cleanTopic} 🔥`,
+            `Beginners यह गलती मत करना ❌ | ${cleanTopic}`,
+            `${cleanTopic} Kaise Kare? (Easy & Practical Method)`,
+            `99% लोग नहीं जानते यह तरीका: ${cleanTopic}`,
+            `${cleanTopic} — Full Tutorial in Hindi (2026 Update)`,
+            `Live Example के साथ समझें: ${cleanTopic} 🚀`,
+            `${cleanTopic} के 5 सबसे ज़रूरी नियम (Must Watch)`,
+            `अब बेहतर रिजल्ट पाएं! ${cleanTopic} Complete Blueprint`,
+            `${cleanTopic} — A to Z पूरी जानकारी हिंदी में`
+          ];
+
+      const description = `${titles[0]}
+
+Welcome to ${ch.name} (${catInfo.label})! In this video, we break down "${cleanTopic}" specifically designed for ${catInfo.audience}.
+
+📌 Chapters / Timestamps:
+00:00 - Introduction & Hook
+01:10 - Common Mistakes to Avoid
+03:30 - Step-by-Step Practical Strategy
+06:45 - Key Takeaways & Action Plan
+
+🔔 Subscribe to ${ch.name}: https://youtube.com/${ch.handle}
+
+#${ch.category} #${cleanTopic.replace(/[^a-zA-Z0-9\u0900-\u097F]/g, '').slice(0, 22) || 'CreatorGrowth'} #YouTubeGrowth2026`;
+
+      const hashtags = `#${ch.category} #${ch.name.replace(/[^a-zA-Z0-9]/g, '')} #${cleanTopic.split(' ').slice(0, 2).join('').replace(/[^a-zA-Z0-9]/g, '') || 'Trending'} #YouTubeTips #CreatorStudio`;
+
+      const tagsList = [
+        cleanTopic,
+        `${cleanTopic} 2026`,
+        `${cleanTopic} hindi`,
+        ch.name,
+        catInfo.label,
+        `${ch.category} tips`,
+        `${ch.category} tutorial`
+      ];
+      const tagsString = tagsList.join(', ').slice(0, 490);
+
+      const mainKeywords = [
+        cleanTopic.toLowerCase(),
+        `${ch.category} tutorial`,
+        `${cleanTopic.split(' ').slice(0, 3).join(' ').toLowerCase()}`,
+        `${ch.name.toLowerCase()}`
+      ];
+
+      const longTailKeywords = [
+        `${cleanTopic.toLowerCase()} step by step guide 2026`,
+        `best ${ch.category} tips for beginners in hindi`,
+        `how to improve in ${ch.category} fast`
+      ];
+
+      const thumbIdeas = [
+        'COMPLETE GUIDE 2026 🔥',
+        'यह गलती मत करना ❌',
+        'PRO SECRET REVEALED ⚡',
+        'STEP BY STEP BLUEPRINT'
+      ];
+
+      lastGeneratedSeo = { title: titles[0], description, tags: tagsString };
+      document.getElementById('send-to-autoseo-btn').classList.remove('hidden');
+
+      const container = document.getElementById('seo-results-container');
+      container.innerHTML = `
+        <div class="saas-card rounded-2xl p-5 sm:p-6 border-purple-500/35">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h4 class="text-base font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-scroll text-purple-400"></i>
+              Generated Video Script (${format === 'short' ? 'YouTube Short' : 'Long Video'})
+            </h4>
+            <button type="button" onclick="copyTextToClipboard(\`${escapeBacktick(scriptText)}\`, 'Video Script')" class="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold">
+              <i class="fa-regular fa-copy mr-1"></i> Copy Full Script
+            </button>
+          </div>
+          <pre class="whitespace-pre-wrap font-sans text-xs sm:text-sm text-gray-200 bg-gray-900/95 p-4 rounded-xl border border-gray-800 leading-relaxed max-h-72 overflow-y-auto">${escapeHtml(scriptText)}</pre>
+        </div>
+
+        <div class="saas-card rounded-2xl p-5 sm:p-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <h4 class="text-base font-bold text-white flex items-center gap-2">
+              <span class="w-7 h-7 rounded-lg bg-yt-red/20 text-yt-red flex items-center justify-center text-xs font-bold">10</span>
+              Category-Tailored SEO Titles
+            </h4>
+            <button type="button" onclick="copyTextToClipboard(\`${escapeBacktick(titles.join('\n'))}\`, 'All 10 Titles')" class="px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-xs font-semibold text-white">
+              <i class="fa-regular fa-copy mr-1"></i> Copy All 10
+            </button>
+          </div>
+          <div class="space-y-2.5">
+            ${titles.map((t, idx) => `
+              <div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-gray-900/90 border border-gray-800">
+                <div class="min-w-0 flex-1">
+                  <span class="text-[11px] font-bold text-yt-red mr-2">#${idx + 1}</span>
+                  <span class="text-xs sm:text-sm font-medium text-gray-100">${escapeHtml(t)}</span>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <button type="button" onclick="useTitleInAutoSeo(\`${escapeBacktick(t)}\`)" class="px-2.5 py-1.5 rounded-lg bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 text-xs font-semibold">Draft</button>
+                  <button type="button" onclick="copyTextToClipboard(\`${escapeBacktick(t)}\`, 'Title #${idx + 1}')" class="px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-yt-red text-white text-xs font-semibold transition">
+                    <i class="fa-regular fa-copy"></i> Copy
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="saas-card rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="text-base font-bold text-white">Complete SEO Description</h4>
+              <button type="button" onclick="copyTextToClipboard(\`${escapeBacktick(description)}\`, 'Description')" class="px-3 py-1.5 rounded-lg bg-yt-red text-white text-xs font-semibold">Copy</button>
+            </div>
+            <pre class="whitespace-pre-wrap font-sans text-xs text-gray-300 bg-gray-900 p-4 rounded-xl border border-gray-800 max-h-64 overflow-y-auto">${escapeHtml(description)}</pre>
+          </div>
+
+          <div class="space-y-4">
+            <div class="saas-card rounded-2xl p-5">
+              <div class="flex items-center justify-between mb-2">
+                <h4 class="text-sm font-bold text-white">Hashtags</h4>
+                <button type="button" onclick="copyTextToClipboard(\`${escapeBacktick(hashtags)}\`, 'Hashtags')" class="px-2.5 py-1 rounded-lg bg-gray-800 text-xs text-white">Copy</button>
+              </div>
+              <p class="text-xs text-sky-300 bg-gray-900 p-3 rounded-xl border border-gray-800">${escapeHtml(hashtags)}</p>
+            </div>
+
+            <div class="saas-card rounded-2xl p-5">
+              <div class="flex items-center justify-between mb-2">
+                <h4 class="text-sm font-bold text-white">Video Tags (${tagsString.length}/500)</h4>
+                <button type="button" onclick="copyTextToClipboard(\`${escapeBacktick(tagsString)}\`, 'Tags')" class="px-2.5 py-1 rounded-lg bg-gray-800 text-xs text-white">Copy</button>
+              </div>
+              <p class="text-xs text-gray-300 bg-gray-900 p-3 rounded-xl border border-gray-800">${escapeHtml(tagsString)}</p>
+            </div>
+
+            <div class="saas-card rounded-2xl p-5">
+              <h4 class="text-sm font-bold text-white mb-2">Thumbnail Text Ideas</h4>
+              <div class="flex flex-wrap gap-2">
+                ${thumbIdeas.map(idea => `
+                  <button type="button" onclick="openInThumbnailMaker(\`${escapeBacktick(idea)}\`)" class="px-3 py-1.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 text-xs font-bold text-amber-300">
+                    ${escapeHtml(idea)} →
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="saas-card rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="text-sm font-bold text-white">Main Keywords</h4>
+              <button type="button" onclick="copyTextToClipboard(\`${escapeBacktick(mainKeywords.join(', '))}\`, 'Main Keywords')" class="text-xs text-gray-400 hover:text-white">Copy All</button>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              ${mainKeywords.map(k => `<span class="px-3 py-1 rounded-lg bg-gray-900 border border-gray-800 text-xs text-gray-200">${escapeHtml(k)}</span>`).join('')}
+            </div>
+          </div>
+          <div class="saas-card rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="text-sm font-bold text-white">Long-Tail Keywords</h4>
+              <button type="button" onclick="copyTextToClipboard(\`${escapeBacktick(longTailKeywords.join(', '))}\`, 'Long-Tail Keywords')" class="text-xs text-gray-400 hover:text-white">Copy All</button>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              ${longTailKeywords.map(k => `<span class="px-3 py-1 rounded-lg bg-gray-900 border border-gray-800 text-xs text-emerald-300">${escapeHtml(k)}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function sendGeneratedSeoToAutoUpdate() {
+      if (!lastGeneratedSeo) return;
+      document.getElementById('autoseo-title-input').value = lastGeneratedSeo.title;
+      document.getElementById('autoseo-desc-input').value = lastGeneratedSeo.description;
+      document.getElementById('autoseo-tags-input').value = lastGeneratedSeo.tags;
+      updateAutoSeoCounters();
+      navigateTo('connect');
+      showToast('SEO metadata loaded into Local Draft Editor!', 'info');
+    }
+
+    function useTitleInAutoSeo(title) {
+      document.getElementById('autoseo-title-input').value = title;
+      if (lastGeneratedSeo) {
+        document.getElementById('autoseo-desc-input').value = lastGeneratedSeo.description;
+        document.getElementById('autoseo-tags-input').value = lastGeneratedSeo.tags;
+      }
+      updateAutoSeoCounters();
+      navigateTo('connect');
+      showToast('Title loaded into Local Draft Editor!', 'info');
+    }
+
+    // ==========================================
+    // 7. PERSONALIZED GROWTH STRATEGY
+    // ==========================================
+    function renderPersonalizedStrategy(notify = false) {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const catInfo = CATEGORY_META[ch.category] || CATEGORY_META.tech;
+      const ms = computeDynamicMilestones(ch);
+
+      document.getElementById('strategy-headline').textContent = `Personalized Strategy: ${ch.name} (${catInfo.label})`;
+      document.getElementById('strategy-subheadline').textContent =
+        `Audience: ${catInfo.audience} • Local Metrics: ${ch.subscribers.toLocaleString()} Subs, ${ch.views.toLocaleString()} Views • Next Target: ${ms.nextSubGoal.toLocaleString()} Subs`;
+
+      document.getElementById('strategy-format-mix-badge').textContent =
+        ch.subscribers < 1000
+          ? 'Recommended Mix: 5 Shorts + 2 Searchable Tutorials / Week'
+          : 'Recommended Mix: 3 High-Hook Shorts + 2 Deep Long Videos / Week';
+
+      document.getElementById('strategy-pillars-grid').innerHTML = `
+        <div class="p-4 rounded-2xl bg-gray-900/95 border border-gray-800 space-y-1.5">
+          <span class="text-[11px] font-bold text-cyan-400 uppercase"><i class="fa-solid fa-clock mr-1"></i>Optimal IST Schedule</span>
+          <p class="text-sm font-bold text-white">Shorts: ${catInfo.bestShortIST}</p>
+          <p class="text-xs text-gray-400">Long Videos: ${catInfo.bestLongIST}</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-gray-900/95 border border-gray-800 space-y-1.5">
+          <span class="text-[11px] font-bold text-yt-red uppercase"><i class="fa-solid fa-heading mr-1"></i>Winning Title Formula</span>
+          <p class="text-xs font-semibold text-gray-200 leading-relaxed">${escapeHtml(catInfo.titleFormula)}</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-gray-900/95 border border-gray-800 space-y-1.5">
+          <span class="text-[11px] font-bold text-pink-400 uppercase"><i class="fa-solid fa-image mr-1"></i>Thumbnail Blueprint</span>
+          <p class="text-xs font-semibold text-gray-200 leading-relaxed">${escapeHtml(catInfo.thumbStyle)}</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-gray-900/95 border border-gray-800 space-y-1.5">
+          <span class="text-[11px] font-bold text-emerald-400 uppercase"><i class="fa-solid fa-magnifying-glass mr-1"></i>SEO & Discovery Focus</span>
+          <p class="text-xs font-semibold text-gray-200 leading-relaxed">${escapeHtml(catInfo.seoFocus)}</p>
+        </div>
+      `;
+
+      const daysPlan = [
+        { day: 'Day 1 (Mon)', type: 'Short', time: catInfo.bestShortIST.split('–')[0].trim() + ' IST', topic: `Quick ${catInfo.label} Myth Buster (45 Sec)`, thumb: 'MYTH BUSTED ❌' },
+        { day: 'Day 2 (Tue)', type: 'Short', time: catInfo.bestShortIST.split('–')[0].trim() + ' IST', topic: `Top 1 Actionable Tip for ${catInfo.audience.split(',')[0]}`, thumb: 'PRO TIP 2026 ⚡' },
+        { day: 'Day 3 (Wed)', type: 'Long Video', time: catInfo.bestLongIST.split('–')[0].trim() + ' IST', topic: catInfo.sampleTopic, thumb: 'COMPLETE GUIDE 🔥' },
+        { day: 'Day 4 (Thu)', type: 'Short', time: catInfo.bestShortIST.split('–')[0].trim() + ' IST', topic: `3 Mistakes Beginners Make in ${catInfo.label}`, thumb: '3 MISTAKES ⚠️' },
+        { day: 'Day 5 (Fri)', type: 'Short', time: catInfo.bestShortIST.split('–')[0].trim() + ' IST', topic: `Before vs After Case Study (${ch.name})`, thumb: 'LIVE RESULT 🚀' },
+        { day: 'Day 6 (Sat)', type: 'Long Video', time: catInfo.bestLongIST.split('–')[0].trim() + ' IST', topic: `Complete Beginner-to-Pro Roadmap in ${catInfo.label}`, thumb: 'FULL ROADMAP 🎯' },
+        { day: 'Day 7 (Sun)', type: 'Community + Short', time: catInfo.bestShortIST.split('–')[0].trim() + ' IST', topic: `Audience Q&A & Weekly Recap Short`, thumb: 'Q&A SPECIAL 💬' }
+      ];
+
+      document.getElementById('strategy-daily-plan-list').innerHTML = daysPlan.map(item => `
+        <div class="p-4 rounded-2xl bg-gray-900/90 border border-gray-800 flex flex-col justify-between gap-3">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="px-2.5 py-0.5 rounded-lg bg-gray-800 text-white text-xs font-bold">${item.day}</span>
+              <span class="text-xs font-mono text-cyan-300 font-semibold">${item.time}</span>
+            </div>
+            <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold mb-1 ${item.type.includes('Long') ? 'bg-sky-500/15 text-sky-300' : 'bg-yt-red/15 text-yt-red'}">${item.type}</span>
+            <h5 class="text-sm font-bold text-white">${escapeHtml(item.topic)}</h5>
+            <p class="text-[11px] text-gray-400 mt-1">Thumbnail Hook: <strong class="text-amber-300">${escapeHtml(item.thumb)}</strong></p>
+          </div>
+          <div class="flex flex-wrap gap-2 pt-2 border-t border-gray-800">
+            <button type="button" onclick="launchTopicInSeoStudio(\`${escapeBacktick(item.topic)}\`)" class="px-3 py-1.5 rounded-lg bg-yt-red hover:bg-yt-darkred text-white text-xs font-semibold">
+              Script & SEO →
+            </button>
+            <button type="button" onclick="openInThumbnailMaker(\`${escapeBacktick(item.thumb)}\`)" class="px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold">
+              Thumbnail
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      if (notify) showToast('Strategy recalculated from local channel profile!', 'info');
+    }
+
+    function launchTopicInSeoStudio(topic) {
+      document.getElementById('seo-topic-input').value = topic;
+      navigateTo('seo-generator');
+      generateFullSeoPack();
+    }
+
+    // ==========================================
+    // 8. BEST UPLOAD TIME ANALYZER (IST)
+    // ==========================================
+    function renderUploadTimeAnalyzer() {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const catInfo = CATEGORY_META[ch.category] || CATEGORY_META.tech;
+      const sampleCount = ch.videos.length;
+      const isLowData = sampleCount < 10;
+
+      const banner = document.getElementById('upload-time-confidence-banner');
+      if (isLowData) {
+        banner.className = 'rounded-2xl p-4 sm:p-5 bg-amber-500/10 border border-amber-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4';
+        banner.innerHTML = `
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center shrink-0 mt-0.5">
+              <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+            </div>
+            <div>
+              <span class="px-2.5 py-0.5 rounded-md bg-amber-500/25 text-amber-200 text-[11px] font-bold uppercase">ESTIMATED RECOMMENDATION (LOW SAMPLE: ${sampleCount} LOCAL VIDEOS)</span>
+              <h4 class="text-sm sm:text-base font-bold text-white mt-1">कम डेटा होने के कारण यह सुझाव अनुमानित (Estimated) है</h4>
+              <p class="text-xs text-gray-300 mt-0.5">
+                "${escapeHtml(ch.name)}" के पास अभी केवल <strong>${sampleCount} लोकल वीडियो रिकॉर्ड</strong> हैं (लाइव YouTube Analytics API नहीं जुड़ा है)। नीचे दिए गए Form से वीडियो रिकॉर्ड जोड़ें।
+              </p>
+            </div>
+          </div>
+          <span class="shrink-0 px-3 py-1.5 rounded-xl bg-gray-900 border border-amber-500/30 text-amber-300 text-xs font-bold">Local Sample: ${sampleCount} / 10</span>
+        `;
+      } else {
+        banner.className = 'rounded-2xl p-4 sm:p-5 bg-sky-500/10 border border-sky-500/40 flex items-center justify-between gap-4';
+        banner.innerHTML = `
+          <div>
+            <h4 class="text-sm font-bold text-white">Local IST Schedule (${sampleCount} Local Video Records Analyzed)</h4>
+            <p class="text-xs text-gray-300 mt-0.5">आपके द्वारा जोड़े गए ${sampleCount} लोकल वीडियो रिकॉर्ड के आधार पर गणना किया गया IST समय।</p>
+          </div>
+          <span class="px-3 py-1 rounded-xl bg-sky-950 text-sky-300 text-xs font-bold">Local Sample: ${sampleCount}</span>
+        `;
+      }
+
+      document.getElementById('best-shorts-time-ist').textContent = catInfo.bestShortIST;
+      document.getElementById('best-shorts-days').textContent = `Suggested Days: ${catInfo.bestDays}`;
+      document.getElementById('best-shorts-reason').textContent = catInfo.shortReason;
+
+      document.getElementById('best-long-time-ist').textContent = catInfo.bestLongIST;
+      document.getElementById('best-long-days').textContent = `Suggested Days: Weekend & Mid-Week Peak (IST)`;
+      document.getElementById('best-long-reason').textContent = catInfo.longReason;
+
+      document.getElementById('upload-sample-count-badge').textContent = `${sampleCount} Local Videos`;
+      const tbody = document.getElementById('publish-history-tbody');
+      if (!ch.videos.length) {
+        tbody.innerHTML = `<tr><td colspan="4" class="py-4 px-3 text-center text-gray-500">अभी कोई लोकल वीडियो रिकॉर्ड नहीं है। नीचे फॉर्म से जोड़ें।</td></tr>`;
+      } else {
+        tbody.innerHTML = ch.videos.map(v => `
+          <tr class="hover:bg-gray-900/70">
+            <td class="py-2.5 px-3 font-medium text-gray-200 max-w-[180px] truncate">${escapeHtml(v.title)}</td>
+            <td class="py-2.5 px-3 text-cyan-300 font-semibold whitespace-nowrap">${escapeHtml(v.publishDay)}, ${escapeHtml(v.publishTimeIST)}</td>
+            <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${v.type === 'Short' ? 'bg-yt-red/15 text-yt-red' : 'bg-sky-500/15 text-sky-400'}">${v.type}</span></td>
+            <td class="py-2.5 px-3 text-right text-gray-300 whitespace-nowrap">${v.views.toLocaleString()} • <span class="text-emerald-400">${v.ctr}</span></td>
+          </tr>
+        `).join('');
+      }
+
+      renderIstChart(ch);
+    }
+
+    function renderIstChart(ch) {
+      const ctx = document.getElementById('istPerformanceChart');
+      if (!ctx) return;
+      if (istChartInstance) istChartInstance.destroy();
+
+      const slots = ['09:00 AM', '01:00 PM', '05:30 PM', '07:00 PM', '08:30 PM', '10:00 PM'];
+      const scores = [250, 480, 950, 1650, 1820, 1100];
+
+      ch.videos.forEach(v => {
+        const t = (v.publishTimeIST || '').toUpperCase();
+        if (t.includes('09:00 AM')) scores[0] += v.views;
+        else if (t.includes('01:00 PM')) scores[1] += v.views;
+        else if (t.includes('05:30 PM')) scores[2] += v.views;
+        else if (t.includes('07:00 PM') || t.includes('07:30 PM')) scores[3] += v.views;
+        else if (t.includes('08:30 PM')) scores[4] += v.views;
+        else if (t.includes('10:00 PM')) scores[5] += v.views;
+      });
+
+      istChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: slots.map(s => s + ' IST'),
+          datasets: [{
+            label: 'Estimated / Local Views Score (IST)',
+            data: scores,
+            backgroundColor: scores.map(val => val === Math.max(...scores) ? '#FF0033' : '#22D3EE'),
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#9CA3AF', font: { size: 11 } }, grid: { display: false } },
+            y: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(55,65,81,0.25)' } }
+          }
+        }
+      });
+    }
+
+    function addVideoPerformanceRecord(e) {
+      e.preventDefault();
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const day = document.getElementById('new-vid-day').value;
+      const timeIST = document.getElementById('new-vid-time').value;
+      const type = document.getElementById('new-vid-type').value;
+      const views = Math.max(1, parseInt(document.getElementById('new-vid-views').value || '100', 10));
+      const title = document.getElementById('new-vid-title').value.trim();
+      if (!title) return;
+
+      ch.videos.unshift({
+        id: 'vid_' + Date.now(),
+        title,
+        type,
+        publishDay: day,
+        publishTimeIST: timeIST,
+        views,
+        ctr: type === 'Short' ? '8.4%' : '6.7%',
+        description: `${title} (${day} ${timeIST})`,
+        tags: `${ch.name}, ${ch.category}`
+      });
+      ch.views += views;
+
+      document.getElementById('new-vid-title').value = '';
+      document.getElementById('new-vid-views').value = '';
+      saveTenantWorkspace();
+      refreshEntireWorkspace();
+      showToast('Local video record saved to browser localStorage!', 'info');
+    }
+
+    // ==========================================
+    // 9. 60 DAYS GROWTH PLAN (PER CHANNEL)
+    // ==========================================
+    function renderMissionSection() {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const ms = computeDynamicMilestones(ch);
+
+      document.getElementById('mission-channel-badge').textContent = `60-DAY LOCAL PLAN: ${ch.name.toUpperCase()}`;
+      document.getElementById('mission-dynamic-goal-desc').textContent =
+        `Current (Local): ${ch.subscribers.toLocaleString()} Subscribers → Dynamic Target: ${ms.nextSubGoal.toLocaleString()} Subscribers & ${ms.nextWatchGoal.toLocaleString()} Watch Hours.`;
+
+      const grid = document.getElementById('mission-60-grid');
+      grid.innerHTML = '';
+      let daysDone = 0, shortsDone = 0, longsDone = 0, subsGained = 0;
+
+      for (let day = 1; day <= 60; day++) {
+        const entry = ch.missionDays[day] || { short: false, long: false, subs: 0, watch: 0, note: '' };
+        const isDone = entry.short || entry.long;
+        const isLongDay = day % 4 === 0;
+        if (isDone) daysDone++;
+        if (entry.short) shortsDone++;
+        if (entry.long) longsDone++;
+        subsGained += Number(entry.subs || 0);
+
+        const isSelected = ch.selectedMissionDay === day;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = () => {
+          ch.selectedMissionDay = day;
+          renderMissionSection();
+        };
+
+        let cls = 'bg-gray-900 border-gray-800 text-gray-300 hover:border-gray-600';
+        if (isDone) cls = 'bg-emerald-600/25 border-emerald-500/60 text-emerald-200 font-bold';
+        else if (isLongDay) cls = 'bg-sky-950/50 border-sky-700/50 text-sky-300';
+        if (isSelected) cls += ' ring-2 ring-yt-red scale-105';
+
+        btn.className = `p-2 rounded-xl border text-center transition flex flex-col items-center justify-center ${cls}`;
+        btn.innerHTML = `
+          <span class="text-[10px] opacity-75">Day</span>
+          <span class="text-xs sm:text-sm font-bold">${day}</span>
+          <span class="text-[9px] mt-0.5">${isDone ? '✅' : isLongDay ? '🎬 Long' : '⚡ Short'}</span>
+        `;
+        grid.appendChild(btn);
+      }
+
+      document.getElementById('mission-days-done').textContent = `${daysDone} / 60`;
+      document.getElementById('mission-shorts-done').textContent = shortsDone;
+      document.getElementById('mission-longs-done').textContent = longsDone;
+      document.getElementById('mission-subs-gained').textContent = `+${subsGained}`;
+
+      const day = ch.selectedMissionDay || 1;
+      const entry = ch.missionDays[day] || { short: false, long: false, subs: 0, watch: 0, note: '' };
+      document.getElementById('selected-day-title').textContent = `Day ${day} Log`;
+      document.getElementById('selected-day-plan').textContent = day % 4 === 0 ? 'Target: 1 Long Video + 1 Short' : 'Target: 1 High-Retention Short';
+      document.getElementById('selected-day-status').textContent = (entry.short || entry.long) ? 'Logged ✅' : 'Pending';
+      document.getElementById('day-short-check').checked = !!entry.short;
+      document.getElementById('day-long-check').checked = !!entry.long;
+      document.getElementById('day-subs-input').value = entry.subs || 0;
+      document.getElementById('day-watch-input').value = entry.watch || 0;
+      document.getElementById('day-note-input').value = entry.note || '';
+    }
+
+    function saveSelectedMissionDay() {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const day = ch.selectedMissionDay || 1;
+      const prev = ch.missionDays[day] || { subs: 0, watch: 0 };
+
+      const newSubs = Math.max(0, parseInt(document.getElementById('day-subs-input').value || '0', 10));
+      const newWatch = Math.max(0, parseFloat(document.getElementById('day-watch-input').value || '0'));
+
+      ch.subscribers = Math.max(0, ch.subscribers + (newSubs - (prev.subs || 0)));
+      ch.watchHours = Math.max(0, Number((ch.watchHours + (newWatch - (prev.watch || 0))).toFixed(1)));
+
+      ch.missionDays[day] = {
+        short: document.getElementById('day-short-check').checked,
+        long: document.getElementById('day-long-check').checked,
+        subs: newSubs,
+        watch: newWatch,
+        note: document.getElementById('day-note-input').value.trim()
+      };
+
+      saveTenantWorkspace();
+      refreshEntireWorkspace();
+      showToast(`Day ${day} log saved to browser localStorage!`, 'info');
+    }
+
+    // ==========================================
+    // 10. 16:9 THUMBNAIL STUDIO
+    // ==========================================
+    function renderThumbnailStudio() {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const ms = computeDynamicMilestones(ch);
+
+      const presetsBar = document.getElementById('thumb-presets-bar');
+      const presets = [
+        { main: 'COMPLETE GUIDE 2026!', sub: 'STEP BY STEP 🔥', bg: 'red' },
+        { main: 'यह गलती मत करना ❌', sub: 'PRO CREATOR ALERT', bg: 'gold' },
+        { main: `${ch.subscribers.toLocaleString()} → ${ms.nextSubGoal.toLocaleString()}!`, sub: '60-DAY GROWTH PLAN 🚀', bg: 'emerald' }
+      ];
+      presetsBar.innerHTML = presets.map(p => `
+        <button type="button" onclick="applyThumbPreset('${escapeBacktick(p.main)}', '${escapeBacktick(p.sub)}', '${p.bg}')" class="text-[11px] px-2.5 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200">
+          ${escapeHtml(p.main)}
+        </button>
+      `).join('');
+
+      generateAiThumbPrompt();
+      renderSavedThumbnails();
+      renderThumbnailCanvas();
+    }
+
+    function applyThumbPreset(main, sub, bg) {
+      document.getElementById('thumb-main-text').value = main;
+      document.getElementById('thumb-sub-text').value = sub;
+      document.getElementById('thumb-bg-style').value = bg;
+      renderThumbnailCanvas();
+    }
+
+    function handleThumbImageUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (evt) {
+        const img = new Image();
+        img.onload = function () {
+          uploadedThumbImage = img;
+          renderThumbnailCanvas();
+          showToast('Local image overlay applied to canvas!', 'info');
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function renderThumbnailCanvas() {
+      const ch = getActiveChannel();
+      const canvas = document.getElementById('thumbnailCanvas');
+      if (!canvas || !ch) return;
+      const ctx = canvas.getContext('2d');
+      const W = 1280, H = 720;
+      const ms = computeDynamicMilestones(ch);
+
+      const mainText = document.getElementById('thumb-main-text').value || 'COMPLETE GUIDE 2026!';
+      const subText = document.getElementById('thumb-sub-text').value || 'STEP BY STEP 🔥';
+      const badgeText = document.getElementById('thumb-badge-text').value || 'PRO CREATOR TIPS';
+      const bgStyle = document.getElementById('thumb-bg-style').value;
+      const accentColor = document.getElementById('thumb-accent-color').value;
+
+      const palettes = {
+        red: ['#18040A', '#6B041A', '#090B10'],
+        cyber: ['#090B10', '#1E1B4B', '#0E7490'],
+        gold: ['#141005', '#422006', '#090B10'],
+        emerald: ['#041712', '#064E3B', '#090B10']
+      };
+      const cols = palettes[bgStyle] || palettes.red;
+      const grad = ctx.createLinearGradient(0, 0, W, H);
+      grad.addColorStop(0, cols[0]);
+      grad.addColorStop(0.55, cols[1]);
+      grad.addColorStop(1, cols[2]);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      if (uploadedThumbImage) {
+        ctx.save();
+        ctx.globalAlpha = 0.45;
+        ctx.drawImage(uploadedThumbImage, 0, 0, W, H);
+        ctx.restore();
+      }
+
+      ctx.save();
+      ctx.translate(820, 140);
+      ctx.rotate(0.04);
+      ctx.fillStyle = 'rgba(17, 21, 32, 0.94)';
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 5;
+      roundRect(ctx, 0, 0, 380, 430, 32, true, true);
+
+      ctx.fillStyle = '#FF0033';
+      roundRect(ctx, 35, 35, 310, 62, 16, true, false);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 24px Inter, sans-serif';
+      ctx.fillText(ch.name.toUpperCase().slice(0, 16), 58, 75);
+
+      ctx.fillStyle = '#9CA3AF';
+      ctx.font = 'bold 24px Inter, sans-serif';
+      ctx.fillText(`SUBS: ${ch.subscribers.toLocaleString()}`, 65, 165);
+
+      ctx.fillStyle = '#34D399';
+      ctx.font = '900 46px Inter, sans-serif';
+      ctx.fillText(`GOAL: ${ms.nextSubGoal.toLocaleString()}`, 52, 245);
+
+      ctx.fillStyle = '#1F2937';
+      roundRect(ctx, 40, 305, 300, 28, 14, true, false);
+      ctx.fillStyle = accentColor;
+      roundRect(ctx, 40, 305, Math.max(40, Math.round(300 * (ms.subPct / 100))), 28, 14, true, false);
+
+      ctx.fillStyle = '#E5E7EB';
+      ctx.font = 'bold 21px Inter, sans-serif';
+      ctx.fillText('CREATOR GROWTH STUDIO', 52, 385);
+      ctx.restore();
+
+      if (badgeText.trim()) {
+        ctx.fillStyle = '#FF0033';
+        roundRect(ctx, 64, 68, Math.max(240, badgeText.length * 19 + 48), 58, 16, true, false);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = '800 26px Inter, Noto Sans Devanagari, sans-serif';
+        ctx.fillText(badgeText.toUpperCase(), 88, 106);
+      }
+
+      ctx.fillStyle = accentColor;
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+      ctx.shadowBlur = 18;
+      ctx.font = '900 82px Inter, Noto Sans Devanagari, sans-serif';
+      wrapCanvasText(ctx, mainText, 64, 245, 710, 100);
+      ctx.shadowBlur = 0;
+
+      if (subText.trim()) {
+        ctx.fillStyle = '#FFFFFF';
+        roundRect(ctx, 64, 520, Math.min(700, Math.max(320, subText.length * 24 + 60)), 86, 20, true, false);
+        ctx.fillStyle = '#090B10';
+        ctx.font = '900 40px Inter, Noto Sans Devanagari, sans-serif';
+        ctx.fillText(subText, 92, 577);
+      }
+    }
+
+    function downloadThumbnailPng() {
+      const canvas = document.getElementById('thumbnailCanvas');
+      const link = document.createElement('a');
+      link.download = `yt-thumbnail-${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showToast('1280×720 PNG downloaded to your device!', 'info');
+    }
+
+    function saveThumbnailToGallery() {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const canvas = document.getElementById('thumbnailCanvas');
+      const temp = document.createElement('canvas');
+      temp.width = 480;
+      temp.height = 270;
+      temp.getContext('2d').drawImage(canvas, 0, 0, 480, 270);
+
+      ch.savedThumbnails.unshift({
+        id: Date.now(),
+        title: document.getElementById('thumb-main-text').value,
+        img: temp.toDataURL('image/jpeg', 0.8)
+      });
+      if (ch.savedThumbnails.length > 6) ch.savedThumbnails.pop();
+      saveTenantWorkspace();
+      renderSavedThumbnails();
+      showToast('Thumbnail preview saved to browser localStorage!', 'info');
+    }
+
+    function renderSavedThumbnails() {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const grid = document.getElementById('saved-thumbnails-grid');
+      document.getElementById('saved-thumbs-count').textContent = ch.savedThumbnails.length;
+      if (!ch.savedThumbnails.length) {
+        grid.innerHTML = '<p class="text-xs text-gray-500 col-span-full">No thumbnails saved in localStorage yet.</p>';
+        return;
+      }
+      grid.innerHTML = ch.savedThumbnails.map(item => `
+        <div class="rounded-xl overflow-hidden border border-gray-800 bg-gray-900">
+          <img src="${item.img}" alt="${escapeHtml(item.title)}" class="w-full aspect-video object-cover" />
+          <div class="p-2 flex items-center justify-between">
+            <span class="text-[11px] text-gray-300 truncate">${escapeHtml(item.title)}</span>
+            <button type="button" onclick="deleteSavedThumb(${item.id})" class="text-gray-500 hover:text-red-400 text-xs"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function deleteSavedThumb(id) {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      ch.savedThumbnails = ch.savedThumbnails.filter(t => t.id !== id);
+      saveTenantWorkspace();
+      renderSavedThumbnails();
+    }
+
+    function generateAiThumbPrompt() {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const catInfo = CATEGORY_META[ch.category] || CATEGORY_META.tech;
+      document.getElementById('ai-thumb-prompt-box').value =
+        `High-CTR YouTube thumbnail for "${ch.name}" (${catInfo.label}), 16:9 widescreen, ${catInfo.thumbStyle}, ultra-sharp 8k studio lighting, clean left negative space for bold typography, no cluttered text --ar 16:9`;
+    }
+
+    function openInThumbnailMaker(text) {
+      document.getElementById('thumb-main-text').value = text;
+      navigateTo('thumbnail');
+      renderThumbnailCanvas();
+    }
+
+    // ==========================================
+    // 11. DAILY NICHE TRENDS, AUTO SEO & CHANNELS
+    // ==========================================
+    function renderTrendsSection() {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const catInfo = CATEGORY_META[ch.category] || CATEGORY_META.tech;
+
+      const topics = [
+        catInfo.sampleTopic,
+        `Top 5 Tools & Resources for ${catInfo.label} Creators (2026)`,
+        `Common Mistakes Beginners Make in ${catInfo.label}`
+      ];
+
+      document.getElementById('trends-content-grid').innerHTML = `
+        <div class="saas-card rounded-2xl p-6 space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-base font-bold text-white">Curated Niche Topics (${catInfo.label})</h4>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">STATIC DEMO DATA</span>
+          </div>
+          <div class="space-y-2.5">
+            ${topics.map(t => `
+              <div class="flex items-center justify-between gap-2 p-3 rounded-xl bg-gray-900 border border-gray-800">
+                <span class="text-xs sm:text-sm text-gray-200">${escapeHtml(t)}</span>
+                <button type="button" onclick="launchTopicInSeoStudio(\`${escapeBacktick(t)}\`)" class="shrink-0 px-3 py-1.5 rounded-lg bg-yt-red text-white text-xs font-bold">
+                  Script & SEO →
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="saas-card rounded-2xl p-6 space-y-3">
+          <h4 class="text-base font-bold text-white">Audience & Content Gap Notes (Curated)</h4>
+          <p class="text-xs text-gray-300 bg-gray-900 p-3.5 rounded-xl border border-gray-800 leading-relaxed">
+            <strong>Target Audience:</strong> ${escapeHtml(catInfo.audience)}<br/><br/>
+            <strong>Content Gap Opportunity:</strong> ${catInfo.label} में अधिकांश क्रिएटर्स केवल थ्योरी बताते हैं; Step-by-Step प्रैक्टिकल उदाहरण और स्पष्ट IST शेड्यूल के साथ वीडियो बनाने से उच्च Retention मिलता है।
+          </p>
+        </div>
+      `;
+    }
+
+    function renderConnectedChannelsManager() {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const grid = document.getElementById('connected-channels-grid');
+      grid.innerHTML = tenantWorkspace.channels.map(c => {
+        const isCurrent = c.id === ch.id;
+        const catInfo = CATEGORY_META[c.category] || CATEGORY_META.tech;
+        return `
+          <div class="p-5 rounded-2xl border flex flex-col justify-between gap-3 ${
+            isCurrent ? 'bg-yt-red/10 border-yt-red' : 'bg-gray-900 border-gray-800'
+          }">
+            <div>
+              <div class="flex items-center justify-between gap-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isCurrent ? 'bg-yt-red text-white' : 'bg-gray-800 text-gray-400'}">
+                  ${isCurrent ? 'ACTIVE (LOCAL)' : 'LOCAL PROFILE'}
+                </span>
+                <span class="text-[11px] text-gray-400">${catInfo.label}</span>
+              </div>
+              <h5 class="text-base font-bold text-white mt-2">${escapeHtml(c.name)}</h5>
+              <p class="text-xs text-gray-400">${escapeHtml(c.handle)}</p>
+              <div class="flex items-center gap-3 mt-3 text-xs text-gray-300">
+                <span><strong class="text-white">${c.subscribers.toLocaleString()}</strong> Subs</span>
+                <span>•</span>
+                <span><strong class="text-white">${c.views.toLocaleString()}</strong> Views</span>
+                <span>•</span>
+                <span><strong class="text-white">${c.watchHours.toLocaleString()}</strong> hrs</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 pt-3 border-t border-gray-800">
+              ${isCurrent
+                ? `<button type="button" onclick="openEditChannelStatsModal()" class="flex-1 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-xs font-semibold text-sky-400">Update Local Metrics</button>`
+                : `<button type="button" onclick="switchActiveChannel('${c.id}')" class="flex-1 py-1.5 rounded-lg bg-yt-red hover:bg-yt-darkred text-white text-xs font-bold">Switch Profile</button>`
+              }
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function loadVideoIntoAutoSeo() {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const select = document.getElementById('autoseo-video-select');
+      if (!ch.videos.length) {
+        select.innerHTML = `<option value="new_draft">Local Video Metadata Draft (${ch.name})</option>`;
+        document.getElementById('autoseo-title-input').value = `${ch.name} — New Video Draft`;
+        document.getElementById('autoseo-desc-input').value = `Description draft for ${ch.name}.`;
+        document.getElementById('autoseo-tags-input').value = `${ch.name}, ${ch.category}`;
+        updateAutoSeoCounters();
+        return;
+      }
+      select.innerHTML = ch.videos.map(v => `<option value="${v.id}">${escapeHtml(v.title)}</option>`).join('');
+      const selectedId = select.value;
+      const vid = ch.videos.find(v => v.id === selectedId) || ch.videos[0];
+      document.getElementById('autoseo-title-input').value = vid.title;
+      document.getElementById('autoseo-desc-input').value = vid.description;
+      document.getElementById('autoseo-tags-input').value = vid.tags;
+      updateAutoSeoCounters();
+    }
+
+    function updateAutoSeoCounters() {
+      const title = document.getElementById('autoseo-title-input').value;
+      const desc = document.getElementById('autoseo-desc-input').value;
+      const tags = document.getElementById('autoseo-tags-input').value;
+      const vidId = document.getElementById('autoseo-video-select').value;
+
+      document.getElementById('autoseo-title-count').textContent = `${title.length} / 100`;
+      document.getElementById('autoseo-desc-count').textContent = `${desc.length} / 5000`;
+      document.getElementById('autoseo-tags-count').textContent = `${tags.length} / 500 chars`;
+
+      document.getElementById('api-payload-preview').textContent = JSON.stringify({
+        status: 'LOCAL_PREVIEW_ONLY (Not sent to YouTube API)',
+        targetEndpoint: 'PATCH https://www.googleapis.com/youtube/v3/videos?part=snippet',
+        body: {
+          id: vidId,
+          snippet: {
+            title,
+            description: desc,
+            tags: tags.split(',').map(t => t.trim()).filter(Boolean)
+          }
+        }
+      }, null, 2);
+    }
+
+    function executeAutoSeoUpdate() {
+      const permitted = document.getElementById('autoseo-permission-check').checked;
+      if (!permitted) {
+        showToast('Please check the Local Draft Confirmation box first.', 'warning');
+        return;
+      }
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const title = document.getElementById('autoseo-title-input').value.trim();
+      const desc = document.getElementById('autoseo-desc-input').value.trim();
+      const tags = document.getElementById('autoseo-tags-input').value.trim();
+      if (!title) {
+        showToast('Video title cannot be empty.', 'warning');
+        return;
+      }
+
+      const vidId = document.getElementById('autoseo-video-select').value;
+      const vid = ch.videos.find(v => v.id === vidId);
+      if (vid) {
+        vid.title = title;
+        vid.description = desc;
+        vid.tags = tags;
+      }
+
+      ch.auditLog.unshift(`${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} — Saved Local Draft: "${title.slice(0, 32)}..." (Not pushed to YouTube API)`);
+      saveTenantWorkspace();
+      renderAuditLog();
+      showToast('SEO draft saved to localStorage (Not sent to live YouTube).', 'info');
+    }
+
+    function renderAuditLog() {
+      const ch = getActiveChannel();
+      const box = document.getElementById('seo-audit-log');
+      if (!ch || !ch.auditLog.length) {
+        box.innerHTML = '<p class="italic text-gray-500">No local SEO drafts saved yet.</p>';
+        return;
+      }
+      box.innerHTML = ch.auditLog.map(item => `
+        <div class="p-2 rounded-lg bg-gray-950 border border-gray-800 text-amber-300">${escapeHtml(item)}</div>
+      `).join('');
+    }
+
+    // ==========================================
+    // 12. EDIT CHANNEL STATS MODAL & UTILITIES
+    // ==========================================
+    function openEditChannelStatsModal() {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      document.getElementById('edit-ch-name').value = ch.name;
+      document.getElementById('edit-ch-category').value = ch.category;
+      document.getElementById('edit-ch-subs').value = ch.subscribers;
+      document.getElementById('edit-ch-views').value = ch.views;
+      document.getElementById('edit-ch-watch').value = ch.watchHours;
+      const modal = document.getElementById('edit-stats-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeEditChannelStatsModal() {
+      const modal = document.getElementById('edit-stats-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function saveEditedChannelStats() {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      ch.name = document.getElementById('edit-ch-name').value.trim() || ch.name;
+      ch.category = document.getElementById('edit-ch-category').value;
+      ch.subscribers = Math.max(0, parseInt(document.getElementById('edit-ch-subs').value || '0', 10));
+      ch.views = Math.max(0, parseInt(document.getElementById('edit-ch-views').value || '0', 10));
+      ch.watchHours = Math.max(0, parseFloat(document.getElementById('edit-ch-watch').value || '0'));
+      saveTenantWorkspace();
+      closeEditChannelStatsModal();
+      refreshEntireWorkspace();
+      showToast('Local metrics updated in browser localStorage!', 'info');
+    }
+
+    const SECTION_TITLES = {
+      'dashboard': ['1. Creator Growth Dashboard', 'LocalStorage Analytics, Dynamic YPP Milestones & Action Tasks'],
+      'seo-generator': ['2. AI Script & SEO Studio', 'Category-Specific Video Scripts, 10 Titles, Tags & Keywords'],
+      'upload-time': ['3. Best Upload Time Analyzer (IST)', 'Indian Standard Time (Asia/Kolkata) Shorts & Long Video Windows'],
+      'strategy': ['4. Personalized Growth Strategy', 'Tailored Content Plan, Title Formulas & Audience Blueprint'],
+      'trends': ['5. Daily Niche Trends (Demo Data)', 'Curated Category Research & Content Gap Opportunities'],
+      'thumbnail': ['6. 16:9 Thumbnail Studio', 'HD Canvas Designer & AI Image Prompts'],
+      'mission': ['7. 60-Day Growth Plan', 'Local Daily Upload Execution & Subscriber Progress Tracker'],
+      'connect': ['8. Channels, OAuth Info & Auto SEO Draft', 'Local Channel Profiles, API Readiness & Metadata Drafts']
+    };
+
+    function navigateTo(sectionId) {
+      document.querySelectorAll('.section-view').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById(`section-${sectionId}`);
+      if (target) target.classList.add('active');
+
+      // Desktop Sidebar Buttons
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.dataset.nav === sectionId) {
+          btn.classList.add('bg-yt-red', 'text-white', 'shadow-md');
+          btn.classList.remove('text-gray-300', 'hover:bg-gray-800/80');
+        } else {
+          btn.classList.remove('bg-yt-red', 'text-white', 'shadow-md');
+          btn.classList.add('text-gray-300', 'hover:bg-gray-800/80');
+        }
+      });
+
+      // Mobile Top Scrollable Tabs
+      document.querySelectorAll('.top-tab-btn').forEach(btn => {
+        if (btn.dataset.topTab === sectionId) {
+          btn.classList.add('bg-yt-red', 'text-white', 'font-bold');
+          btn.classList.remove('bg-gray-900', 'border', 'border-gray-800', 'text-gray-300');
+          btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } else {
+          btn.classList.remove('bg-yt-red', 'text-white', 'font-bold');
+          btn.classList.add('bg-gray-900', 'border', 'border-gray-800', 'text-gray-300');
+        }
+      });
+
+      // Mobile Bottom Quick Nav
+      document.querySelectorAll('.mob-nav-btn').forEach(btn => {
+        if (btn.dataset.mobNav === sectionId) {
+          btn.classList.add('text-yt-red', 'font-semibold');
+          btn.classList.remove('text-gray-400');
+        } else {
+          btn.classList.remove('text-yt-red', 'font-semibold');
+          btn.classList.add('text-gray-400');
+        }
+      });
+
+      if (SECTION_TITLES[sectionId]) {
+        document.getElementById('page-title').textContent = SECTION_TITLES[sectionId][0];
+        document.getElementById('page-subtitle').textContent = SECTION_TITLES[sectionId][1];
+      }
+
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('mobile-drawer-backdrop');
+      if (!sidebar.classList.contains('-translate-x-full') && window.innerWidth < 1024) {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+
+      if (sectionId === 'thumbnail') renderThumbnailCanvas();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleMobileDrawer() {
+      document.getElementById('sidebar').classList.toggle('-translate-x-full');
+      document.getElementById('mobile-drawer-backdrop').classList.toggle('hidden');
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const styles = {
+        success: 'bg-emerald-950/95 border-emerald-500/50 text-emerald-100',
+        info: 'bg-sky-950/95 border-sky-500/50 text-sky-100',
+        warning: 'bg-amber-950/95 border-amber-500/50 text-amber-100'
+      };
+      toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-xl border shadow-2xl text-xs sm:text-sm font-medium transition-all duration-300 ${styles[type] || styles.info}`;
+      toast.innerHTML = `<i class="fa-solid fa-circle-info shrink-0"></i><span>${escapeHtml(message)}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 3200);
+    }
+
+    function copyTextToClipboard(text, label = 'Text') {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast(`${label} copied to clipboard!`, 'info');
+      } catch (e) {
+        showToast('Copy failed.', 'warning');
+      }
+      document.body.removeChild(ta);
+    }
+
+    function copyTextById(id) {
+      const el = document.getElementById(id);
+      if (el) copyTextToClipboard(el.value !== undefined ? el.value : el.innerText, 'Content');
+    }
+
+    function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(' ');
+      let line = '';
+      let currentY = y;
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+          ctx.fillText(line.trim(), x, currentY);
+          line = words[n] + ' ';
+          currentY += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line.trim(), x, currentY);
+    }
+
+    function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + width, y, x + width, y + height, radius);
+      ctx.arcTo(x + width, y + height, x, y + height, radius);
+      ctx.arcTo(x, y + height, x, y, radius);
+      ctx.arcTo(x, y, x + width, y, radius);
+      ctx.closePath();
+      if (fill) ctx.fill();
+      if (stroke) ctx.stroke();
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function escapeBacktick(str) {
+      return String(str).replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+    }
+
+    // Boot Application Safely on Window Load
+    window.onload = function () {
+      try {
+        const savedSession = JSON.parse(localStorage.getItem(SAAS_SESSION_KEY) || 'null');
+        if (savedSession && savedSession.id) {
+          activateUserSession(savedSession);
+        }
+      } catch (e) {}
+    };
+  </script>
+</body>
+</html>
